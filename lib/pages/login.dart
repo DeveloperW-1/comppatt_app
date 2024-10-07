@@ -44,17 +44,14 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  // Add login logic here
                   if (_usernameController.text == 'user' &&
                       _passwordController.text == 'pass') {
                       _usernameController.clear();
                       _passwordController.clear();
                     Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
                   } else {
-                      // Clear the text fields if login fails
                       _usernameController.clear();
                       _passwordController.clear();
-                      // Show an error message if login fails
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
