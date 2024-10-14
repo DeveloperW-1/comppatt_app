@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/sell.dart';
+import '../pages/home_page_admin.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -58,6 +59,17 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             title: ElevatedButton(
+              onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
+              },
+              child: Text('Inicio'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromRGBO(21, 21, 21, 100),
+              ),
+            ),
+          ),
+          ListTile(
+            title: ElevatedButton(
               onPressed: () {},
               child: Text('Reportes'),
               style: ElevatedButton.styleFrom(
@@ -78,7 +90,6 @@ class _MyDrawerState extends State<MyDrawer> {
             title: ElevatedButton(
               onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Sell()));
-                
               },
               child: Text('Ventas'),
               style: ElevatedButton.styleFrom(

@@ -1,8 +1,24 @@
+import 'package:comppatt/models/cliente.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'home_page_admin.dart';
+// import '../config/connection.config.dart';
+// import 'package:mysql1/mysql1.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
+
+  // Future<List<Cliente>> getCliente() async {
+  //   var url =Uri.parse("http://localhost:3000/allCliente");
+
+  //   var response = await http.get(url);
+
+  //   var data = jsonDecode(response.body);
+
+
+
+  // }
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -44,6 +60,7 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
+                  // getCliente();
                   if (_usernameController.text == 'user' &&
                       _passwordController.text == 'pass') {
                       _usernameController.clear();
