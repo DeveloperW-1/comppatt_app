@@ -14,7 +14,7 @@ class Sell extends StatelessWidget {
         appBar: AppBar(
           title: Text('Dashboard'),
         ),
-        drawer: MyDrawer() // SideBar
+        drawer: SideBar() // SideBar
       ),
     );
   }

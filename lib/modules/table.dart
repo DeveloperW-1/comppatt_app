@@ -1,101 +1,166 @@
-import 'package:comppatt/models/cliente.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:comppatt/pages/page_client.dart';
 import 'package:flutter/material.dart';
+import 'package:comppatt/models/cliente.dart';
 
 class MyTable extends StatelessWidget {
-  MyTable({super.key});
+  final List<Cliente> clientes;  // Recibe la lista de clientes como parámetro
 
-  Future<List<Cliente>> getData() async {
-    var url = Uri.parse("http://localhost:3000/allCliente");
-
-    var response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-
-      // Verifica si 'clientes' está presente y no es null
-      if (json['clientes'] != null) {
-        var data = json['clientes'] as List;
-
-        // Convierte la lista de mapas en una lista de objetos Cliente
-        List<Cliente> records =
-            data.map((item) => Cliente.fromMap(item)).toList();
-        return records;
-      } else {
-        // Si 'clientes' es null, retorna una lista vacía
-        return [];
-      }
-    } else {
-      throw Exception('Error al cargar los datos');
-    }
-  }
+  const MyTable({super.key, required this.clientes});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder<List<Cliente>>(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Sin Datos'));
-          }
-
-          var data = snapshot.data!;
-
-          return ListView(
-            children: [
-              DataTable(
-                columns: const [
-                  DataColumn(label: Text('Nombre')),
-                  DataColumn(label: Text('Telefono')),
-                  DataColumn(label: Text('Correo Electronico')),
-                  DataColumn(label: Text('RFC')),
-                  DataColumn(label: Text('CURP')),
-                  DataColumn(label: Text('Domicilio')),
-                  DataColumn(label: Text('Dias Credito')),
-                  DataColumn(label: Text('Acciones')),
+      child: Container(
+        color: Color.fromRGBO(0, 0, 0, 100), 
+        child: ListView(
+          children: [
+            DataTable(
+              columns: const [
+                DataColumn(
+                  label: Text(
+                    'Nombre', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'Telefono', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'Correo Electronico', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'RFC', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'CURP', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'Domicilio', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'Dias Credito', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+                DataColumn(
+                  label: Text(
+                    'Acciones', 
+                    style: TextStyle(color: Color.fromARGB(255, 174, 174, 174))
+                  )
+                ),
+              ],
+              rows: clientes.map((item) => DataRow(
+                cells: [
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 150), // Limita el ancho a 150px
+                      child: Text(item.nombre, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible, // Para saltar al siguiente renglón
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 100),
+                      child: Text(item.telefono, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 200), // Limita ancho del correo
+                      child: Text(item.correoElectronico, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 100),
+                      child: Text(item.rfc, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 150),
+                      child: Text(item.curp, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 250),
+                      child: Text(item.domicilio, 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 80),
+                      child: Text(item.diasCredito.toString(), 
+                        style: const TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    )
+                  ),
+                  DataCell(
+                    ElevatedButton(
+                      child: const Text("Abono"),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(item.curp),
+                            content: const Text("Abono"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(builder: (context) => PageClient(curp: item.curp))
+                                  );
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  ),
                 ],
-                rows: data
-                    .map((item) => DataRow(cells: [
-                          DataCell(Text(item.nombre)),
-                          DataCell(Text(item.telefono)),
-                          DataCell(Text(item.correoElectronico)),
-                          DataCell(Text(item.rfc)),
-                          DataCell(Text(item.curp)),
-                          DataCell(Text(item.domicilio)),
-                          DataCell(Text(item.diasCredito.toString())),
-                          DataCell(ElevatedButton(
-                            child: const Text("Abono"),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Acciones'),
-                                  content: const Text('Redirigiendo a Abonos'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          )),
-                        ]))
-                    .toList(),
-              ),
-            ],
-          );
-        },
+              )).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

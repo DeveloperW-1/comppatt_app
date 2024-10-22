@@ -1,7 +1,7 @@
-import 'package:comppatt/models/cliente.dart';
+// import 'package:comppatt/models/cliente.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 import 'home_page_admin.dart';
 // import '../config/connection.config.dart';
 // import 'package:mysql1/mysql1.dart';

@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import '../pages/sell.dart';
+// import '../pages/sell.dart';
 import '../pages/home_page_admin.dart';
 
-class MyDrawer extends StatefulWidget {
-  const MyDrawer({super.key});
+class SideBar extends StatefulWidget {
+  const SideBar({super.key});
 
   @override
-  _MyDrawerState createState() => _MyDrawerState();
+  _SideBarState createState() => _SideBarState();
 }
 
-class _MyDrawerState extends State<MyDrawer> {
+class _SideBarState extends State<SideBar> {
   bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color.fromRGBO(33, 33, 33, 100),
         child: Container(
-      color: Color.fromRGBO(33, 33, 33, 100),
+      color: Color.fromRGBO(31, 29, 29, 80),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -86,19 +87,20 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
           ),
-          ListTile(
-            title: ElevatedButton(
-              onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Sell()));
-              },
-              child: Text('Ventas'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromRGBO(21, 21, 21, 100),
-              ),
-            ),
-          ),
+          // ListTile(
+          //   title: ElevatedButton(
+          //     onPressed: () {
+          //           Navigator.push(context, MaterialPageRoute(builder: (context) => Sell()));
+          //     },
+          //     child: Text('Ventas'),
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: Color.fromRGBO(21, 21, 21, 100),
+          //     ),
+          //   ),
+          // ),
           ListTile(
             title: Text('Utilerías'),
+            textColor: Colors.white,
             trailing: Icon(
               isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
               color: Colors.white,
@@ -117,26 +119,31 @@ class _MyDrawerState extends State<MyDrawer> {
                 children: [
                   ListTile(
                     title: Text('Ventas'),
+                    textColor: Colors.white,
                     onTap: () {
                     },
                   ),
                   ListTile(
                     title: Text('Abonos'),
+                    textColor: Colors.white,
                     onTap: () {
                     },
                   ),
                   ListTile(
                     title: Text('Cliente Particular'),
+                    textColor: Colors.white,
                     onTap: () {
                     },
                   ),
                   ListTile(
                     title: Text('Inventario'),
+                    textColor: Colors.white,
                     onTap: () {
                     },
                   ),
                   ListTile(
                     title: Text('Agregar...'),
+                    textColor: Colors.white,
                     onTap: () {
                     },
                   ),

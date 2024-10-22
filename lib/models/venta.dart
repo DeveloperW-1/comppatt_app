@@ -1,13 +1,11 @@
-import 'package:comppatt/models/cliente.dart';
-
 class Venta {
   final int id;
-  final double montoTotal;
+  final String montoTotal;
   final int plazoMeses;
   final DateTime fechaVenta;
   final DateTime fechaCorte;
   final double tazaIntereses;
-  final Cliente cliente;
+  final String cliente;
 
   Venta({
     required this.id,
@@ -19,10 +17,11 @@ class Venta {
     required this.cliente,
   });
 
+  // Deserialización desde el mapa
   factory Venta.fromMap(Map<String, dynamic> map) {
     return Venta(
       id: map['ID'],
-      montoTotal: map['Monto_Total'],
+      montoTotal: map['Monto_Total'].toString(),
       plazoMeses: map['Plazo_Meses'],
       fechaVenta: DateTime.parse(map['Fecha_Venta']),
       fechaCorte: DateTime.parse(map['Fecha_Corte']),
@@ -31,10 +30,11 @@ class Venta {
     );
   }
 
+  // Serialización al mapa
   Map<String, dynamic> toMap() {
     return {
       'ID': id,
-      'Monto_Total': montoTotal,
+      'Monto_Total': montoTotal.toString(),
       'Plazo_Meses': plazoMeses,
       'Fecha_Venta': fechaVenta.toIso8601String(),
       'Fecha_Corte': fechaCorte.toIso8601String(),
