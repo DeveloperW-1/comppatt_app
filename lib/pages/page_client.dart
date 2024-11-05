@@ -6,19 +6,22 @@ import 'package:comppatt/controller/clientecontroller.dart';
 
 class PageClient extends StatelessWidget {
   final String curp;
+  final String title;
 
-  PageClient({super.key, required this.curp});
+  const PageClient({super.key, required this.curp, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+    return MaterialApp(
+      theme: ThemeData.dark(),
+      home: Scaffold(
+        appBar: AppBar(
+        // backgroundColor: Colors.transparent,
+        // foregroundColor: Colors.white,
         // title: const Text('Ventas'),
       ),
-      backgroundColor: const Color.fromRGBO(142, 142, 142, 1),
-      drawer: SideBar(),
+      // backgroundColor: const Color.fromRGBO(142, 142, 142, 1),
+      drawer: SideBar(title: title,),
       body: FutureBuilder<List<Venta>>(
         future: ClienteController().getVentasByID(curp), // Se cargan las ventas del cliente
         builder: (context, snapshot) {
@@ -41,6 +44,8 @@ class PageClient extends StatelessWidget {
           return TableVenta(ventas: ventas);
         },
       ),
+      ),
+      
     );
   }
 }

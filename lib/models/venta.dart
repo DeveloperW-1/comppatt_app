@@ -33,13 +33,13 @@ class Venta {
   // Serialización al mapa
   Map<String, dynamic> toMap() {
     return {
-      'ID': id,
-      'Monto_Total': montoTotal.toString(),
-      'Plazo_Meses': plazoMeses,
-      'Fecha_Venta': fechaVenta.toIso8601String(),
-      'Fecha_Corte': fechaCorte.toIso8601String(),
-      'Taza_Intereses': tazaIntereses,
-      'Cliente': cliente,
+      'id': id,
+      'montoTotal': montoTotal.toString(),
+      'plazoMeses': plazoMeses,
+      'fechaVenta': fechaVenta.toIso8601String(),
+      'fechaCorte': fechaCorte.toIso8601String(),
+      'tazaIntereses': tazaIntereses,
+      'cliente': cliente,
     };
   }
 }

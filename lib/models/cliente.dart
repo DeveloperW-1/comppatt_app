@@ -24,20 +24,20 @@ class Cliente {
       correoElectronico: map['Correo_Electronico'] ?? 'Sin correo',
       rfc: map['RFC'] ?? 'Sin RFC',
       curp: map['CURP'] ?? 'Sin CURP',
-      domicilio: map['Domicilio'] ?? 'Sin domicilio',
+      domicilio: map['Domicilio'] ?? 'Sin   ',
       diasCredito: map['Dias_Credito'] ?? 1  // Asegura que sea un entero
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'Nombre': nombre,
-      'Telefono': telefono,
-      'Correo_Electronico': correoElectronico,
-      'RFC': rfc,
-      'CURP': curp,
-      'Domicilio': domicilio,
-      'Dias_Credito': diasCredito
+      'nombre': nombre,
+      'telefono': telefono,
+      'correoElectronico': correoElectronico,
+      'rfc': rfc,
+      'curp': curp,
+      'domicilio': domicilio,
+      'diasCredito': diasCredito
     };
   }
 }

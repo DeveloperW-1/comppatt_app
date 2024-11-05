@@ -16,7 +16,7 @@ class HomePageAdmin extends StatelessWidget {
         // title: const Text('Clientes'),
       ),
       backgroundColor: Color.fromRGBO(142, 142, 142, 100),
-      drawer: SideBar(),
+      drawer: SideBar(title: 'Administrador',),
       body: FutureBuilder<List<Cliente>>(
         future: ClienteController().getAllClient(),  // Cargamos los datos de la API
         builder: (context, snapshot) {
@@ -37,7 +37,7 @@ class HomePageAdmin extends StatelessWidget {
 
           // Pasamos la lista de clientes a MyTable solo si hay datos
           var clientes = snapshot.data!;
-          return MyTable(clientes: clientes);
+          return MyTable(clientes: clientes, title: 'Administrador');
         },
       ),
     );
