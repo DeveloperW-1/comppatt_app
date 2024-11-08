@@ -1,7 +1,7 @@
 import 'package:comppatt/modules/sidebar.dart';
 import 'package:flutter/material.dart';
-import 'package:comppatt/controller/clientecontroller.dart';
-import 'package:comppatt/models/cliente.dart';
+// import 'package:comppatt/controller/clientecontroller.dart';
+// import 'package:comppatt/models/cliente.dart';
 import 'package:comppatt/modules/table.dart';
 
 class HomePageUser extends StatelessWidget {

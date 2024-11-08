@@ -1,5 +1,5 @@
 import 'package:comppatt/controller/clientecontroller.dart';
-import 'package:comppatt/modules/table_venta.dart';
+// import 'package:comppatt/modules/table_venta.dart';
 import 'package:comppatt/pages/page_client.dart';
 import 'package:comppatt/pages/user/save_client.dart';
 import 'package:flutter/material.dart';
