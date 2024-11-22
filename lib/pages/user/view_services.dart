@@ -1,11 +1,12 @@
 import 'package:comppatt/modules/sidebar.dart';
+import 'package:comppatt/modules/table_servicios.dart';
 import 'package:flutter/material.dart';
 // import 'package:comppatt/controller/clientecontroller.dart';
 // import 'package:comppatt/models/cliente.dart';
-import 'package:comppatt/modules/table.dart';
 
-class HomePageUser extends StatelessWidget {
-  const HomePageUser({super.key});
+class ViewServices extends StatelessWidget {
+  final String title;
+  const ViewServices({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +16,9 @@ class HomePageUser extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(),
         drawer: SideBar(
-          title: 'Jefe Departamento',
+          title: title,
         ),
-        body: MyTable(title: "Jefe Departamento"),
+        body: TableServicios(title: "Jefe Departamento"),
       ),
     );
   }

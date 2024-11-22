@@ -24,7 +24,7 @@ class Cliente {
       correoElectronico: map['Correo_Electronico'] ?? 'Sin correo',
       rfc: map['RFC'] ?? 'Sin RFC',
       curp: map['CURP'] ?? 'Sin CURP',
-      domicilio: map['Domicilio'] ?? 'Sin   ',
+      domicilio: map['Domicilio'] ?? 'Sin',
       diasCredito: map['Dias_Credito'] ?? 1  // Asegura que sea un entero
     );
   }

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 class AddClientForm extends StatefulWidget {
   final Cliente? cliente; // Parámetro opcional para editar
-
-  const AddClientForm({super.key, this.cliente});
+  final String title;
+  const AddClientForm({super.key, this.cliente, required this.title});
 
   @override
   _AddClientFormState createState() => _AddClientFormState();
@@ -41,8 +41,9 @@ class _AddClientFormState extends State<AddClientForm> {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
+        backgroundColor: Color.fromRGBO(33, 33, 33, 100),
         appBar: AppBar(
-          foregroundColor: const Color.fromRGBO(255, 255, 255, 1),
+          title: Text("Guardar Cliente"),
         ),
         body: Form(
           key: _formKey,
@@ -115,6 +116,10 @@ class _AddClientFormState extends State<AddClientForm> {
   }
 
   Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) {
+      return; // Detener si el formulario no es válido
+    }
+
     Cliente clientData = Cliente(
       nombre: _nombreController.text,
       telefono: _telefonoController.text,

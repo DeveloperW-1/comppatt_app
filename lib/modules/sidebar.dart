@@ -1,9 +1,15 @@
+import 'package:comppatt/modules/table_servicios.dart';
+import 'package:comppatt/pages/home_page_admin.dart';
 import 'package:comppatt/pages/user/home_page_user.dart';
 import 'package:comppatt/pages/user/save_client.dart';
+import 'package:comppatt/pages/user/save_service.dart';
+import 'package:comppatt/pages/user/save_supplier.dart';
 import 'package:comppatt/pages/user/save_venta.dart';
+import 'package:comppatt/pages/user/view_services.dart';
 import 'package:flutter/material.dart';
+
 // import '../pages/sell.dart';
-// 
+//
 class SideBar extends StatefulWidget {
   final String
       title; // Parámetro que recibirá el título (Administrador o Jefe de Departamento)
@@ -38,46 +44,39 @@ class _SideBarState extends State<SideBar> {
                     style: const TextStyle(color: Colors.white, fontSize: 24),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(142, 142, 142, 100),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: const [
-                        Icon(Icons.search, color: Colors.white),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: 'Buscar',
-                              hintStyle: TextStyle(color: Colors.white54),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
             // Opciones visibles para todos
-            ListTile(
-              title: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePageUser()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
-                  ),
-                  child: const Text('Inicio')),
-            ),
+            if (widget.title == "Jefe Departamento") ...[
+              ListTile(
+                title: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePageUser()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
+                    ),
+                    child: const Text('Inicio')),
+              ),
+            ] else ...{
+              ListTile(
+                title: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePageAdmin()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
+                    ),
+                    child: const Text('Inicio')),
+              )
+            },
             // Condicional para mostrar opciones si no es Jefe de Departamento
             if (widget.title != 'Jefe Departamento') ...[
               ListTile(
@@ -108,7 +107,7 @@ class _SideBarState extends State<SideBar> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
                     ),
-                    child: const Text('Ventas')),
+                    child: const Text('Venta')),
               ),
               ListTile(
                 title: ElevatedButton(
@@ -117,15 +116,7 @@ class _SideBarState extends State<SideBar> {
                       backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
                     ),
                     child: const Text('Cliente Particular')),
-              ),
-              ListTile(
-                title: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
-                    ),
-                    child: const Text('Abonos')),
-              ),
+              )
             ],
             ListTile(
               title: const Text('Utilerías'),
@@ -148,40 +139,56 @@ class _SideBarState extends State<SideBar> {
                   children: [
                     if (widget.title == 'Jefe Departamento') ...[
                       ListTile(
-                        title: const Text('Agregar Producto'),
-                        textColor: Colors.white,
-                        onTap: () {
-                          // Acción
-                        },
-                      ),
-                        ListTile(
                         title: const Text('Agregar Cliente'),
                         textColor: Colors.white,
                         onTap: () {
                           Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddClientForm()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddClientForm(title: widget.title,)));
                         },
                       ),
                       ListTile(
                         title: const Text('Agregar Servicio'),
                         textColor: Colors.white,
                         onTap: () {
-                          // Acción
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddServiceForm(title: widget.title)));
                         },
                       ),
                       ListTile(
-                        title: const Text('Inventario'),
+                        title: const Text('Agregar Proveedor'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddProveedorForm(title: widget.title)));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Inventario de Proveedores'),
                         textColor: Colors.white,
                         onTap: () {
                           // Acción
                         },
                       ),
+                      ListTile(
+                        title: const Text('Inventario de Servicios'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewServices(title: widget.title,)));
+                        },
+                      ),
                     ] else ...[
                       // Otras opciones si no es Jefe Departamento (opciones de utilerías para admin)
                       ListTile(
-                        title: const Text('Ventas'),
+                        title: const Text('Venta'),
                         textColor: Colors.white,
                         onTap: () {
                           // Acción

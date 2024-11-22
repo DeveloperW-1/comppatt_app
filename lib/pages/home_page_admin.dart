@@ -15,7 +15,6 @@ class HomePageAdmin extends StatelessWidget {
         foregroundColor: const Color.fromRGBO(255, 255, 255, 1),
         // title: const Text('Clientes'),
       ),
-      backgroundColor: Color.fromRGBO(142, 142, 142, 100),
       drawer: SideBar(title: 'Administrador',),
       body: MyTable(title: "Administrador"),
     );

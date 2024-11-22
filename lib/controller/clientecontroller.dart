@@ -98,6 +98,7 @@ class ClienteController {
         List<Cliente> records =
             data.map((item) => Cliente.fromMap(item)).toList();
         return records;
+        print(records);
       } else {
         return [];
       }
