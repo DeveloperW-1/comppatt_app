@@ -1,7 +1,5 @@
 import 'package:comppatt/controller/proveedorcontroller.dart';
-import 'package:comppatt/controller/servicecontroller.dart';
 import 'package:comppatt/models/proveedor.dart';
-import 'package:comppatt/models/service.dart';
 // import 'package:comppatt/modules/table_venta.dart';
 import 'package:flutter/material.dart';
 
