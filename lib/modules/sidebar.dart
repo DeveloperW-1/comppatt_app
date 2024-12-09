@@ -1,10 +1,13 @@
 import 'package:comppatt/pages/home_page_admin.dart';
 import 'package:comppatt/pages/user/home_page_user.dart';
 import 'package:comppatt/pages/user/save_client.dart';
+import 'package:comppatt/pages/user/save_compras.dart';
 import 'package:comppatt/pages/user/save_service.dart';
 import 'package:comppatt/pages/user/save_supplier.dart';
 import 'package:comppatt/pages/user/save_venta.dart';
+import 'package:comppatt/pages/user/view_client.dart';
 import 'package:comppatt/pages/user/view_services.dart';
+import 'package:comppatt/pages/user/view_supplier.dart';
 import 'package:flutter/material.dart';
 
 // import '../pages/sell.dart';
@@ -21,6 +24,7 @@ class SideBar extends StatefulWidget {
 
 class _SideBarState extends State<SideBar> {
   bool isExpanded = false;
+  bool isExpandedReportes = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +50,7 @@ class _SideBarState extends State<SideBar> {
                 ],
               ),
             ),
-            // Opciones visibles para todos
-            if (widget.title == "Jefe Departamento") ...[
-              ListTile(
-                title: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePageUser()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
-                    ),
-                    child: const Text('Inicio')),
-              ),
-            ] else ...{
+            if (widget.title == 'Administrador') ...[
               ListTile(
                 title: ElevatedButton(
                     onPressed: () {
@@ -74,10 +63,7 @@ class _SideBarState extends State<SideBar> {
                       backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
                     ),
                     child: const Text('Inicio')),
-              )
-            },
-            // Condicional para mostrar opciones si no es Jefe de Departamento
-            if (widget.title != 'Jefe Departamento') ...[
+              ),
               ListTile(
                 title: ElevatedButton(
                     onPressed: () {},
@@ -94,9 +80,20 @@ class _SideBarState extends State<SideBar> {
                     ),
                     child: const Text('Consultas')),
               ),
-            ],
-            // Opciones específicas para Jefe Departamento
-            if (widget.title == 'Jefe Departamento') ...[
+            ] else ...[
+              ListTile(
+                title: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePageUser()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
+                    ),
+                    child: const Text('Inicio')),
+              ),
               ListTile(
                 title: ElevatedButton(
                     onPressed: () {
@@ -107,18 +104,10 @@ class _SideBarState extends State<SideBar> {
                       backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
                     ),
                     child: const Text('Venta')),
-              ),
-              ListTile(
-                title: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(21, 21, 21, 100),
-                    ),
-                    child: const Text('Cliente Particular')),
               )
             ],
             ListTile(
-              title: const Text('Utilerías'),
+              title: const Text('Catalogos'),
               textColor: Colors.white,
               trailing: Icon(
                 isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
@@ -144,7 +133,9 @@ class _SideBarState extends State<SideBar> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddClientForm(title: widget.title,)));
+                                  builder: (context) => AddClientForm(
+                                        title: widget.title,
+                                      )));
                         },
                       ),
                       ListTile(
@@ -154,7 +145,8 @@ class _SideBarState extends State<SideBar> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddServiceForm(title: widget.title)));
+                                  builder: (context) =>
+                                      AddServiceForm(title: widget.title)));
                         },
                       ),
                       ListTile(
@@ -164,26 +156,21 @@ class _SideBarState extends State<SideBar> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddProveedorForm(title: widget.title)));
+                                  builder: (context) =>
+                                      AddProveedorForm(title: widget.title)));
                         },
                       ),
                       ListTile(
-                        title: const Text('Inventario de Proveedores'),
-                        textColor: Colors.white,
-                        onTap: () {
-                          // Acción
-                        },
-                      ),
-                      ListTile(
-                        title: const Text('Inventario de Servicios'),
+                        title: const Text('Agregar Compra'),
                         textColor: Colors.white,
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ViewServices(title: widget.title,)));
+                                  builder: (context) =>
+                                      AddCompraForm(title: widget.title)));
                         },
-                      ),
+                      )
                     ] else ...[
                       // Otras opciones si no es Jefe Departamento (opciones de utilerías para admin)
                       ListTile(
@@ -207,6 +194,117 @@ class _SideBarState extends State<SideBar> {
                           // Acción
                         },
                       ),
+                    ],
+                  ],
+                ),
+              ),
+            ListTile(
+              title: const Text('Reportes'),
+              textColor: Colors.white,
+              trailing: Icon(
+                isExpandedReportes ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                color: Colors.white,
+              ),
+              onTap: () {
+                setState(() {
+                  isExpandedReportes = !isExpandedReportes;
+                });
+              },
+            ),
+            if (isExpandedReportes)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.title == 'Jefe Departamento') ...[
+                      ListTile(
+                        title: const Text('Relacion de Proveedores'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewSupplier(title: widget.title)));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Relacion de Servicios'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewServices(
+                                        title: widget.title,
+                                      )));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Relacion de Clientes'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewCustomer(
+                                        title: widget.title,
+                                      )));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Relacion de Ventas'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ViewServices(
+                          //               title: widget.title,
+                          //             )));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Relacion de Abonos'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ViewServices(
+                          //               title: widget.title,
+                          //             )));
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Relacion de Compras'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ViewServices(
+                          //               title: widget.title,
+                          //             )));
+                        },
+                      )
+                    ] else ...[
+                      // Otras opciones si no es Jefe Departamento (opciones de utilerías para admin)
+                      ListTile(
+                        title: const Text('Venta'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          // Acción
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Abonos'),
+                        textColor: Colors.white,
+                        onTap: () {
+                          // Acción
+                        },
+                      )
                     ],
                   ],
                 ),

@@ -13,7 +13,9 @@ class HomePageUser extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("Jefe de Departamento"),
+        ),
         drawer: SideBar(
           title: 'Jefe Departamento',
         ),

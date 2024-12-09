@@ -1,34 +1,34 @@
-import 'package:comppatt/controller/servicecontroller.dart';
-import 'package:comppatt/models/service.dart'; // import 'package:comppatt/modules/table_venta.dart';
+import 'package:comppatt/controller/clientecontroller.dart';
+import 'package:comppatt/models/cliente.dart';
 import 'package:flutter/material.dart';
 
-class TableServicios extends StatefulWidget {
+class TablaClientes extends StatefulWidget {
   final String title;
 
-  const TableServicios({super.key, required this.title});
+  const TablaClientes({super.key, required this.title});
 
   @override
-  _TableServicios createState() => _TableServicios();
+  _TablaClientes createState() => _TablaClientes();
 }
 
-class _TableServicios extends State<TableServicios> {
-  List<Service> servicios = [];
+class _TablaClientes extends State<TablaClientes> {
+  List<Cliente> cliente = [];
 
   @override
   void initState() {
     super.initState();
-    fetchservicios(); // Cargar la lista inicial de servicios
+    fetchclientes(); // Cargar la lista inicial de cliente
   }
 
-  // Función para obtener los servicios desde el servidor
-  Future<void> fetchservicios() async {
+  // Función para obtener los cliente desde el servidor
+  Future<void> fetchclientes() async {
     try {
-      var fetchedservicios = await ServiceController().getAllServices();
+      List<Cliente> fetchclientes = await ClienteController().getAllClient();
       setState(() {
-        servicios = fetchedservicios;
+        cliente = fetchclientes;
       });
     } catch (e) {
-      print('Error al cargar los servicios: $e');
+      print('Error al cargar los clientes: $e');
     }
   }
 
@@ -38,9 +38,9 @@ class _TableServicios extends State<TableServicios> {
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-        body: FutureBuilder<List<Service>>(
-          future: ServiceController()
-              .getAllServices(), // Se cargan las ventas del cliente
+        body: FutureBuilder<List<Cliente>>(
+          future: ClienteController()
+              .getAllClient(), // Se cargan las ventas del cliente
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -50,15 +50,14 @@ class _TableServicios extends State<TableServicios> {
 
             if (snapshot.hasError) {
               return Center(
-                  child:
-                      Text('Error al cargar los servicios: ${snapshot.error}'));
+                  child: Text('Error al cargar los clientes: ${snapshot.error}'));
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No hay servicios disponibles'));
+              return const Center(child: Text('No hay clientes disponibles'));
             }
 
-            // Mostrar la tabla de servicios
+            // Mostrar la tabla de clientes
             return Container(
               // color: Colors.black,
               padding: EdgeInsets.only(top: 50, left: 45, right: 100),
@@ -72,29 +71,39 @@ class _TableServicios extends State<TableServicios> {
                       )),
                       DataColumn(
                           label: Text(
-                        'Descripcion',
+                        'Telefono',
                       )),
                       DataColumn(
                           label: Text(
-                        'Tipo',
+                        'Correo Electronico',
                       )),
                       DataColumn(
                           label: Text(
-                        'Precio Venta',
+                        'RFC',
                       )),
                       DataColumn(
                           label: Text(
-                        'IVA',
+                        'CURP',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Domicilio',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Dias Credito',
                       )),
                     ],
-                    rows: servicios
+                    rows: cliente
                         .map((item) => DataRow(
                               cells: [
                                 DataCell(Text(item.nombre)),
-                                DataCell(Text(item.descripcion)),
-                                DataCell(Text(item.tipo.name)),
-                                DataCell(Text(item.precioVenta.toString())),
-                                DataCell(Text(item.iva.toString())),
+                                DataCell(Text(item.telefono)),
+                                DataCell(Text(item.correoElectronico)),
+                                DataCell(Text(item.rfc)),
+                                DataCell(Text(item.curp)),
+                                DataCell(Text(item.domicilio)),
+                                DataCell(Text((item.diasCredito).toString())),
                               ],
                             ))
                         .toList(),

@@ -1,7 +1,5 @@
-import 'package:comppatt/controller/proveedorcontroller.dart';
 import 'package:comppatt/modules/sidebar.dart';
 import 'package:flutter/material.dart';
-import 'package:comppatt/models/proveedor.dart';
 import 'package:comppatt/models/service.dart';
 import 'package:comppatt/controller/servicecontroller.dart';
 
@@ -20,18 +18,19 @@ class _AddServiceFormState extends State<AddServiceForm> {
   final _formKey = GlobalKey<FormState>();
   final _nombreController = TextEditingController();
   final _descripcionController = TextEditingController();
-  final _precioCompraController = TextEditingController();
+  // final _precioCompraController = TextEditingController();
   final _precioVentaController = TextEditingController();
+  final _ivaController = TextEditingController();
   String? _tipoSeleccionado;
-  Proveedor? _proveedorSeleccionado;
-  List<Proveedor> _proveedores = [];
-  bool _camposHabilitados =
-      false; // Nueva bandera para habilitar/deshabilitar campos
+
+  // Proveedor? _proveedorSeleccionado;
+  // List<Proveedor> _proveedores = [];
+  // bool _camposHabilitados = false; // Nueva bandera para habilitar/deshabilitar campos
 
   @override
   void initState() {
     super.initState();
-    _cargarProveedores();
+    // _cargarProveedores();
   }
 
   void _showDialog(String title, String content) {
@@ -52,16 +51,53 @@ class _AddServiceFormState extends State<AddServiceForm> {
     );
   }
 
-  Future<void> _cargarProveedores() async {
-    try {
-      final proveedores = await ProveedorController().getProveedores();
-      setState(() {
-        _proveedores = proveedores;
-      });
-    } catch (e) {
-      print("Error cargando proveedores: $e");
-    }
-  }
+  // Future<void> _cargarProveedores() async {
+  //   try {
+  //     final proveedores = await ProveedorController().getProveedores();
+  //     setState(() {
+  //       _proveedores = proveedores;
+  //     });
+
+  //     if (proveedores.isEmpty) {
+  //       _mostrarDialogoSinProveedores();
+  //     }
+  //   } catch (e) {
+  //     print("Error cargando proveedores: $e");
+  //   }
+  // }
+
+  // void _mostrarDialogoSinProveedores() {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false, // Evita cerrar el diálogo tocando fuera
+  //     builder: (context) => AlertDialog(
+  //       title: Text('Sin Proveedores'),
+  //       content: Text(
+  //           'No se encontraron proveedores en la base de datos. ¿Deseas agregar uno nuevo?'),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => AddProveedorForm(
+  //                   title: widget.title,
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //           child: Text('Agregar Proveedor'),
+  //         ),
+  //         TextButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //           child: Text('Continuar'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
@@ -69,18 +105,11 @@ class _AddServiceFormState extends State<AddServiceForm> {
     }
 
     Service nuevoServicio = Service(
-      nombre: _nombreController.text,
-      descripcion: _descripcionController.text,
-      precioCompra: _tipoSeleccionado == "Producto"
-          ? int.parse(_precioCompraController.text)
-          : 1,
-      precioVenta: int.parse(_precioVentaController.text),
-      tipo: _tipoSeleccionado == "Producto"
-          ? TipoServicio.producto
-          : TipoServicio.servicio,
-      proveedor:
-          _tipoSeleccionado == "Producto" ? _proveedorSeleccionado?.id : null,
-    );
+        nombre: _nombreController.text,
+        descripcion: _descripcionController.text,
+        precioVenta: int.parse(_precioVentaController.text),
+        tipo: TipoServicio.servicio,
+        iva: double.parse(_ivaController.text));
 
     try {
       bool response = false;
@@ -94,9 +123,7 @@ class _AddServiceFormState extends State<AddServiceForm> {
                 ? 'Servicio Guardado'
                 : 'Servicio Actualizado');
         _formKey.currentState!.reset();
-        setState(() {
-          _camposHabilitados = false; // Resetear campos
-        });
+        setState(() {});
       } else {
         _showDialog('Advertencia', 'No se pudo completar la operación');
       }
@@ -105,17 +132,6 @@ class _AddServiceFormState extends State<AddServiceForm> {
         SnackBar(content: Text('Error: $e')),
       );
     }
-  }
-
-  void _actualizarEstadoCampos(String tipo) {
-    setState(() {
-      _camposHabilitados = true; // Habilita los campos al seleccionar un tipo
-      _tipoSeleccionado = tipo;
-
-      if (_tipoSeleccionado == "Servicio") {
-        _proveedorSeleccionado = null; // Limpia el proveedor
-      }
-    });
   }
 
   Widget buildTextField(String label, TextEditingController controller,
@@ -150,93 +166,60 @@ class _AddServiceFormState extends State<AddServiceForm> {
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text("Guardar Servicio"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Regresa a la pantalla anterior
+            },
+          ),
         ),
         drawer: SideBar(title: widget.title),
-        body: _proveedores.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : Center(
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 80,
-                          width: 400,
-                          child: DropdownButtonFormField<String>(
-                            value: _tipoSeleccionado,
-                            onChanged: (value) {
-                              if (value != null) {
-                                _actualizarEstadoCampos(value);
-                              }
-                            },
-                            items: ["Servicio", "Producto"]
-                                .map((tipo) => DropdownMenuItem(
-                                      value: tipo,
-                                      child: Text(tipo),
-                                    ))
-                                .toList(),
-                            decoration: InputDecoration(labelText: "Tipo"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Por favor selecciona un tipo";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        buildTextField("Nombre", _nombreController,
-                            enabled: _camposHabilitados),
-                        buildTextField("Descripción", _descripcionController,
-                            enabled: _camposHabilitados),
-                        buildTextField("Precio Compra", _precioCompraController,
-                            keyboardType: TextInputType.number,
-                            enabled: _tipoSeleccionado == "Producto"),
-                        buildTextField("Precio Venta", _precioVentaController,
-                            keyboardType: TextInputType.number,
-                            enabled: _camposHabilitados),
-                        SizedBox(
-                          height: 80,
-                          width: 400,
-                          child: DropdownButtonFormField<Proveedor>(
-                            value: _proveedorSeleccionado,
-                            onChanged: _tipoSeleccionado == "Servicio"
-                                ? null
-                                : (nuevoProveedor) {
-                                    setState(() {
-                                      _proveedorSeleccionado = nuevoProveedor;
-                                    });
-                                  },
-                            items: _proveedores
-                                .map((proveedor) => DropdownMenuItem(
-                                      value: proveedor,
-                                      child: Text(proveedor.nombre),
-                                    ))
-                                .toList(),
-                            decoration: InputDecoration(labelText: "Proveedor"),
-                            validator: (value) {
-                              if (_tipoSeleccionado == "Producto" &&
-                                  (value == null || value.nombre.isEmpty)) {
-                                return "Por favor selecciona un proveedor";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: _camposHabilitados ? _submitForm : null,
-                          child: Text(widget.service == null
-                              ? 'Agregar Servicio'
-                              : 'Actualizar Servicio'),
-                        ),
-                      ],
+        body: Center(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 80,
+                    width: 200,
+                    child: DropdownButtonFormField<String>(
+                      value: _tipoSeleccionado,
+                      onChanged: (value) {},
+                      items: ["Servicio", "Producto"]
+                          .map((tipo) => DropdownMenuItem(
+                                value: tipo,
+                                child: Text(tipo),
+                              ))
+                          .toList(),
+                      decoration: InputDecoration(labelText: "Tipo"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Por favor selecciona un tipo";
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                ),
+                  buildTextField("Nombre", _nombreController),
+                  buildTextField("Descripción", _descripcionController),
+                  buildTextField("Precio Venta", _precioVentaController,
+                      keyboardType: TextInputType.number),
+                  buildTextField("IVA", _ivaController),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Text(widget.service == null
+                        ? 'Agregar Servicio'
+                        : 'Actualizar Servicio'),
+                  ),
+                ],
               ),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -38,45 +38,63 @@ class _TableProveedores extends State<TableProveedores> {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
-          backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-          body: Container(
-            // color: Colors.black,
-            padding: EdgeInsets.only(top: 50, left: 45, right: 100),
-            child: ListView(
-              children: [
-                DataTable(
-                  columns: const [
-                    DataColumn(
-                        label: Text(
-                      'Id',
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'Nombre',
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'Contacto',
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'Direccion',
-                    )),
-                  ],
-                  rows: servicios
-                      .map((item) => DataRow(
-                            cells: [
-                              DataCell(Text(item.id.toString())),
-                              DataCell(Text(item.nombre)),
-                              DataCell(Text(item.contacto)),
-                              DataCell(Text(item.direccion))
-                            ],
-                          ))
-                      .toList(),
-                ),
-              ],
-            ),
-          )),
+        backgroundColor: Color.fromRGBO(33, 33, 33, 100),
+        body: FutureBuilder<List<Proveedor>>(
+          future: ProveedorController()
+              .getProveedores(), // Se cargan las ventas del cliente
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                  child:
+                      CircularProgressIndicator()); // Mostrar spinner de carga
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                  child: Text('Error al cargar los proveedores: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No hay proveedores disponibles'));
+            }
+
+            // Mostrar la tabla de proveedores
+            return Container(
+              // color: Colors.black,
+              padding: EdgeInsets.only(top: 50, left: 45, right: 100),
+              child: ListView(
+                children: [
+                  DataTable(
+                    columns: const [
+                      DataColumn(
+                          label: Text(
+                        'Nombre',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Contacto',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Direccion',
+                      )),
+                    ],
+                    rows: servicios
+                        .map((item) => DataRow(
+                              cells: [
+                                DataCell(Text(item.nombre)),
+                                DataCell(Text(item.contacto)),
+                                DataCell(Text(item.direccion))
+                              ],
+                            ))
+                        .toList(),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

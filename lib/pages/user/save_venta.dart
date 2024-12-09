@@ -15,7 +15,15 @@ class _SaveVenta extends State<SaveVenta> {
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("Guardar Venta"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Regresa a la pantalla anterior
+            },
+          ),
+        ),
         drawer: SideBar(title: 'Jefe Departamento'),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16),

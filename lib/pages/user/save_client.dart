@@ -44,6 +44,12 @@ class _AddClientFormState extends State<AddClientForm> {
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
         appBar: AppBar(
           title: Text("Guardar Cliente"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Regresa a la pantalla anterior
+            },
+          ),
         ),
         body: Form(
           key: _formKey,
@@ -146,7 +152,6 @@ class _AddClientFormState extends State<AddClientForm> {
             widget.cliente == null
                 ? 'Cliente Guardado Exitosamente'
                 : 'Cliente Actualizado Exitosamente');
-        // _formKey.currentState!.reset();
       } else {
         _showDialog('Advertencia', 'No se pudo completar la operación');
       }
@@ -167,6 +172,7 @@ class _AddClientFormState extends State<AddClientForm> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              _formKey.currentState!.reset();
             },
             child: Text('OK'),
           ),

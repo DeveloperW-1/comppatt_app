@@ -14,7 +14,15 @@ class ViewServices extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text("Reporte de Servicios"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Regresa a la pantalla anterior
+            },
+          ),
+        ),
         drawer: SideBar(
           title: title,
         ),

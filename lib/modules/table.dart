@@ -44,7 +44,7 @@ class _MyTableState extends State<MyTable> {
           backgroundColor: Color.fromRGBO(33, 33, 33, 100),
           body: Container(
             // color: Colors.black,
-            padding: EdgeInsets.only(top: 50, left: 45, right: 80),
+            padding: EdgeInsets.only(top: 50, left: 40, right: 80),
             child: ListView(
               children: [
                 DataTable(

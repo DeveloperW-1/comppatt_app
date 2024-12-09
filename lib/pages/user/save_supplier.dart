@@ -115,6 +115,12 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
         drawer: SideBar(title: widget.title),
         appBar: AppBar(
           title: Text("Guardar Proveedor"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context); // Regresa a la pantalla anterior
+            },
+          ),
         ),
         body: Form(
           key: _formKey,

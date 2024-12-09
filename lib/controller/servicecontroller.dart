@@ -56,7 +56,7 @@ class ServiceController {
 
   // GET: Obtener todos los servicios
   Future<List<Service>> getAllServices() async {
-    var url = Uri.parse("http://localhost:3000/servicios");
+    var url = Uri.parse("http://localhost:3000/Servicios");
 
     try {
       var response = await http.get(url);
