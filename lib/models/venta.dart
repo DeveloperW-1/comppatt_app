@@ -1,14 +1,14 @@
 class Venta {
-  final int id;
-  final String montoTotal;
+  final int? id;
+  final double montoTotal;
   final int plazoMeses;
   final DateTime fechaVenta;
   final DateTime fechaCorte;
   final double tazaIntereses;
-  final String cliente;
+  final String? cliente;
 
   Venta({
-    required this.id,
+    this.id,
     required this.montoTotal,
     required this.plazoMeses,
     required this.fechaVenta,
@@ -20,13 +20,13 @@ class Venta {
   // Deserialización desde el mapa
   factory Venta.fromMap(Map<String, dynamic> map) {
     return Venta(
-      id: map['ID'],
-      montoTotal: map['Monto_Total'].toString(),
-      plazoMeses: map['Plazo_Meses'],
+      id: int.parse(map['ID']),
+      montoTotal: double.parse(map['Monto_Total']),
+      plazoMeses: int.parse(map['Plazo_Meses']),
       fechaVenta: DateTime.parse(map['Fecha_Venta']),
       fechaCorte: DateTime.parse(map['Fecha_Corte']),
-      tazaIntereses: map['Taza_Intereses'],
-      cliente: map['Cliente'],
+      tazaIntereses: double.parse(map['Taza_Intereses']),
+      cliente: map['Cliente'].toString(),
     );
   }
 
@@ -34,12 +34,12 @@ class Venta {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'montoTotal': montoTotal.toString(),
-      'plazoMeses': plazoMeses,
-      'fechaVenta': fechaVenta.toIso8601String(),
-      'fechaCorte': fechaCorte.toIso8601String(),
-      'tazaIntereses': tazaIntereses,
-      'cliente': cliente,
+      'Monto_Total': montoTotal,
+      'Plazo_Meses': plazoMeses,
+      'Fecha_Venta': fechaVenta.toIso8601String(),
+      'Fecha_Corte': fechaCorte.toIso8601String(),
+      'Taza_Intereses': tazaIntereses,
+      'Cliente': cliente,
     };
   }
 }

@@ -6,6 +6,7 @@ import 'package:comppatt/pages/user/save_service.dart';
 import 'package:comppatt/pages/user/save_supplier.dart';
 import 'package:comppatt/pages/user/save_venta.dart';
 import 'package:comppatt/pages/user/view_client.dart';
+import 'package:comppatt/pages/user/view_compras.dart';
 import 'package:comppatt/pages/user/view_services.dart';
 import 'package:comppatt/pages/user/view_supplier.dart';
 import 'package:flutter/material.dart';
@@ -265,28 +266,17 @@ class _SideBarState extends State<SideBar> {
                           //             )));
                         },
                       ),
-                      ListTile(
-                        title: const Text('Relacion de Abonos'),
-                        textColor: Colors.white,
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => ViewServices(
-                          //               title: widget.title,
-                          //             )));
-                        },
-                      ),
+
                       ListTile(
                         title: const Text('Relacion de Compras'),
                         textColor: Colors.white,
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => ViewServices(
-                          //               title: widget.title,
-                          //             )));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewCompras(
+                                        title: widget.title,
+                                      )));
                         },
                       )
                     ] else ...[
@@ -298,13 +288,7 @@ class _SideBarState extends State<SideBar> {
                           // Acción
                         },
                       ),
-                      ListTile(
-                        title: const Text('Abonos'),
-                        textColor: Colors.white,
-                        onTap: () {
-                          // Acción
-                        },
-                      )
+                      
                     ],
                   ],
                 ),

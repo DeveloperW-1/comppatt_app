@@ -15,7 +15,7 @@ class Proveedor {
   // Método para convertir de Map a Proveedor
   factory Proveedor.fromMap(Map<String, dynamic> map) {
     return Proveedor(
-      id: map['ID'],
+      id: map['id'],
       nombre: map['Nombre'],
       contacto: map['Contacto'],
       direccion: map['Direccion'],

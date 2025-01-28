@@ -74,4 +74,24 @@ class ServiceController {
       throw Exception('Error al conectar con la API: $error');
     }
   }
+
+  Future<List<Service>> getAllProducts() async {
+    var url = Uri.parse("http://localhost:3000/Productos");
+
+    try {
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body) as List;
+
+        List<Service> services =
+            json.map((item) => Service.fromMap(item)).toList();
+        return services;
+      } else {
+        throw Exception('Error al cargar los servicios: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error al conectar con la API: $error');
+    }
+  }
 }

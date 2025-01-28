@@ -1,32 +1,32 @@
 import 'dart:io';
 
-import 'package:comppatt/controller/servicecontroller.dart';
-import 'package:comppatt/models/service.dart'; // import 'package:comppatt/modules/table_venta.dart';
+import 'package:comppatt/controller/proveedorcontroller.dart';
+import 'package:comppatt/models/proveedor.dart';
+// import 'package:comppatt/modules/table_venta.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class TableServicios extends StatefulWidget {
+class TableVentas extends StatefulWidget {
   final String title;
 
-  const TableServicios({super.key, required this.title});
+  const TableVentas({super.key, required this.title});
 
   @override
-  _TableServicios createState() => _TableServicios();
+  _TableVentas createState() => _TableVentas();
 }
 
-class _TableServicios extends State<TableServicios> {
-  List<Service> servicios = [];
+class _TableVentas extends State<TableVentas> {
+  List<Proveedor> proveedores = [];
 
   @override
   void initState() {
     super.initState();
-    fetchservicios(); // Cargar la lista inicial de servicios
+    fetchProveedores(); // Cargar la lista inicial de proveedores
   }
 
-  Future<void> generatePDF(
-      List<Service> servicios, BuildContext context) async {
+    Future<void> generatePDF(List<Proveedor> proveedores, BuildContext context) async {
     try {
       final pdf = pw.Document();
 
@@ -36,7 +36,7 @@ class _TableServicios extends State<TableServicios> {
           build: (context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('Reporte de servicios',
+              pw.Text('Reporte de ventas',
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 20),
@@ -46,30 +46,24 @@ class _TableServicios extends State<TableServicios> {
                   // Encabezado de la tabla
                   pw.TableRow(
                     children: [
-                      pw.Text('Nombre',
+                      pw.Text('Monto Total',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Nombre',
+                      pw.Text('Telefono',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Descripcion',
+                      pw.Text('Correo Electronico',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Tipo',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Precio Venta',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('IVA',
+                      pw.Text('RFC',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
                     ],
                   ),
                   // Filas de datos
-                  ...servicios.map(
-                    (servicios) => pw.TableRow(
+                  ...proveedores.map(
+                    (proveedor) => pw.TableRow(
                       children: [
-                        pw.Text(servicios.id.toString()),
-                        pw.Text(servicios.nombre),
-                        pw.Text(servicios.descripcion),
-                        pw.Text(servicios.tipo.name),
-                        pw.Text(servicios.precioVenta.toString()),
-                        pw.Text(servicios.iva.toString())
+                        pw.Text(proveedor.id.toString()),
+                        pw.Text(proveedor.nombre),
+                        pw.Text(proveedor.contacto),
+                        pw.Text(proveedor.direccion)
                       ],
                     ),
                   ),
@@ -82,8 +76,8 @@ class _TableServicios extends State<TableServicios> {
 
       // Usar FilePicker para abrir el explorador de archivos
       String? savePath = await FilePicker.platform.saveFile(
-        dialogTitle: 'Guardar Reporte de servicios',
-        fileName: 'reporte_servicios.pdf',
+        dialogTitle: 'Guardar Reporte de proveedores',
+        fileName: 'reporte_proveedores.pdf',
         allowedExtensions: ['pdf'], // Restringir a solo archivos PDF
         type: FileType.custom,
       );
@@ -112,15 +106,15 @@ class _TableServicios extends State<TableServicios> {
     }
   }
 
-  // Función para obtener los servicios desde el servidor
-  Future<void> fetchservicios() async {
+  // Función para obtener los proveedores desde el servidor
+  Future<void> fetchProveedores() async {
     try {
-      var fetchedservicios = await ServiceController().getAllServices();
+      var fetchedproveedores = await ProveedorController().getProveedores();
       setState(() {
-        servicios = fetchedservicios;
+        proveedores = fetchedproveedores;
       });
     } catch (e) {
-      print('Error al cargar los servicios: $e');
+      print('Error al cargar los proveedores: $e');
     }
   }
 
@@ -130,9 +124,9 @@ class _TableServicios extends State<TableServicios> {
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-        body: FutureBuilder<List<Service>>(
-          future: ServiceController()
-              .getAllServices(), // Se cargan las ventas del servicios
+        body: FutureBuilder<List<Proveedor>>(
+          future: ProveedorController()
+              .getProveedores(), 
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -142,62 +136,43 @@ class _TableServicios extends State<TableServicios> {
 
             if (snapshot.hasError) {
               return Center(
-                  child:
-                      Text('Error al cargar los servicios: ${snapshot.error}'));
+                  child: Text('Error al cargar los proveedores: ${snapshot.error}'));
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No hay servicios disponibles'));
+              return const Center(child: Text('No hay proveedores disponibles'));
             }
 
-            // Mostrar la tabla de servicios
+            // Mostrar la tabla de proveedores
             return Container(
               // color: Colors.black,
               padding: EdgeInsets.only(top: 50, left: 45, right: 100),
               child: ListView(
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await generatePDF(servicios, context);
-                    },
-                    child: Text('Guardar Reporte'),
-                  ),
+                  ElevatedButton(onPressed: () async {
+                    await generatePDF(proveedores, context);
+                  }, child: Text("Guardar Reporte")),
                   DataTable(
                     columns: const [
-                      DataColumn(
-                          label: Text(
-                        'ID',
-                      )),
                       DataColumn(
                           label: Text(
                         'Nombre',
                       )),
                       DataColumn(
                           label: Text(
-                        'Descripcion',
+                        'Contacto',
                       )),
                       DataColumn(
                           label: Text(
-                        'Tipo',
-                      )),
-                      DataColumn(
-                          label: Text(
-                        'Precio Venta',
-                      )),
-                      DataColumn(
-                          label: Text(
-                        'IVA',
+                        'Direccion',
                       )),
                     ],
-                    rows: servicios
+                    rows: proveedores
                         .map((item) => DataRow(
                               cells: [
-                                DataCell(Text(item.id.toString())),
                                 DataCell(Text(item.nombre)),
-                                DataCell(Text(item.descripcion)),
-                                DataCell(Text(item.tipo.name)),
-                                DataCell(Text(item.precioVenta.toString())),
-                                DataCell(Text(item.iva.toString())),
+                                DataCell(Text(item.contacto)),
+                                DataCell(Text(item.direccion))
                               ],
                             ))
                         .toList(),

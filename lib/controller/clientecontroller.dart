@@ -115,12 +115,13 @@ class ClienteController {
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
 
-      // print(json);
+      print(json);
 
       if (json['ventas'] != null) {
         var data = json['ventas'] as List;
 
         List<Venta> records = data.map((item) => Venta.fromMap(item)).toList();
+        print(records);
         return records;
       } else {
         return [];

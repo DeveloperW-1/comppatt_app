@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:comppatt/controller/clientecontroller.dart';
 import 'package:comppatt/models/cliente.dart';
+import 'package:pdf/pdf.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:pdf/widgets.dart' as pw;
+
 import 'package:flutter/material.dart';
 
 class TablaClientes extends StatefulWidget {
@@ -17,7 +23,96 @@ class _TablaClientes extends State<TablaClientes> {
   @override
   void initState() {
     super.initState();
-    fetchclientes(); // Cargar la lista inicial de cliente
+    fetchclientes();
+  }
+
+  Future<void> generatePDF(List<Cliente> clientes, BuildContext context) async {
+    try {
+      final pdf = pw.Document();
+
+      // Crear el contenido del PDF
+      pdf.addPage(
+        pw.Page(
+          build: (context) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Reporte de Clientes',
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  // Encabezado de la tabla
+                  pw.TableRow(
+                    children: [
+                      pw.Text('Nombre',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Telefono',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Correo Electronico',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('RFC',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('CURP',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Domicilio',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Dias Credito',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    ],
+                  ),
+                  // Filas de datos
+                  ...clientes.map(
+                    (cliente) => pw.TableRow(
+                      children: [
+                        pw.Text(cliente.nombre),
+                        pw.Text(cliente.telefono),
+                        pw.Text(cliente.correoElectronico),
+                        pw.Text(cliente.rfc),
+                        pw.Text(cliente.curp),
+                        pw.Text(cliente.domicilio),
+                        pw.Text(cliente.diasCredito.toString()),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      // Usar FilePicker para abrir el explorador de archivos
+      String? savePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Guardar Reporte de Clientes',
+        fileName: 'reporte_clientes.pdf',
+        allowedExtensions: ['pdf'], // Restringir a solo archivos PDF
+        type: FileType.custom,
+      );
+
+      if (savePath == null) {
+        // El usuario canceló la operación
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Operación cancelada")),
+        );
+        return;
+      }
+
+      // Guardar el archivo en la ubicación seleccionada
+      final file = File(savePath);
+      await file.writeAsBytes(await pdf.save());
+
+      // Confirmación de guardado
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Reporte guardado en: $savePath")),
+      );
+    } catch (e) {
+      // Manejo de errores
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error al generar el PDF: $e")),
+      );
+    }
   }
 
   // Función para obtener los cliente desde el servidor
@@ -50,7 +145,8 @@ class _TablaClientes extends State<TablaClientes> {
 
             if (snapshot.hasError) {
               return Center(
-                  child: Text('Error al cargar los clientes: ${snapshot.error}'));
+                  child:
+                      Text('Error al cargar los clientes: ${snapshot.error}'));
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -60,10 +156,21 @@ class _TablaClientes extends State<TablaClientes> {
             // Mostrar la tabla de clientes
             return Container(
               // color: Colors.black,
-              padding: EdgeInsets.only(top: 50, left: 45, right: 100),
+              padding: EdgeInsets.all(16.0),
               child: ListView(
                 children: [
-                  DataTable(
+                  Center(),
+                  SizedBox(
+                      height: 50,
+                      width: 100,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await generatePDF(cliente, context);
+                        },
+                        child: Text('Guardar Reporte'),
+                      )),
+                  SizedBox(
+                      child: DataTable(
                     columns: const [
                       DataColumn(
                           label: Text(
@@ -107,7 +214,7 @@ class _TablaClientes extends State<TablaClientes> {
                               ],
                             ))
                         .toList(),
-                  ),
+                  ))
                 ],
               ),
             );

@@ -107,8 +107,8 @@ class _AddServiceFormState extends State<AddServiceForm> {
     Service nuevoServicio = Service(
         nombre: _nombreController.text,
         descripcion: _descripcionController.text,
-        precioVenta: int.parse(_precioVentaController.text),
-        tipo: TipoServicio.servicio,
+        precioVenta: double.parse(_precioVentaController.text),
+        tipo: _tipoSeleccionado == 'Servicio' ? TipoServicio.servicio : TipoServicio.producto,
         iva: double.parse(_ivaController.text));
 
     try {
@@ -187,7 +187,11 @@ class _AddServiceFormState extends State<AddServiceForm> {
                     width: 200,
                     child: DropdownButtonFormField<String>(
                       value: _tipoSeleccionado,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        setState(() {
+                          _tipoSeleccionado = value;
+                        });
+                      },
                       items: ["Servicio", "Producto"]
                           .map((tipo) => DropdownMenuItem(
                                 value: tipo,

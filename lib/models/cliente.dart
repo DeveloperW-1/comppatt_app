@@ -1,4 +1,5 @@
 class Cliente {
+  final int? id;
   final String nombre;
   final String telefono;
   final String correoElectronico;
@@ -8,6 +9,7 @@ class Cliente {
   final int diasCredito;
 
   Cliente({
+    this.id,
     required this.nombre,
     required this.telefono,
     required this.correoElectronico,
@@ -19,6 +21,7 @@ class Cliente {
 
   factory Cliente.fromMap(Map<String, dynamic> map) {
     return Cliente(
+      id: map['id'],
       nombre: map['Nombre'] ?? 'Sin nombre',  // Maneja el caso nulo
       telefono: map['Telefono'] ?? 'Sin teléfono',
       correoElectronico: map['Correo_Electronico'] ?? 'Sin correo',
@@ -31,13 +34,14 @@ class Cliente {
 
   Map<String, dynamic> toMap() {
     return {
-      'nombre': nombre,
-      'telefono': telefono,
-      'correoElectronico': correoElectronico,
-      'rfc': rfc,
-      'curp': curp,
-      'domicilio': domicilio,
-      'diasCredito': diasCredito
+      'id': id,
+      'Nombre': nombre,
+      'Telefono': telefono,
+      'Correo_Electronico': correoElectronico,
+      'RFC': rfc,
+      'CURP': curp,
+      'Domicilio': domicilio,
+      'Dias_Credito': diasCredito
     };
   }
 }
