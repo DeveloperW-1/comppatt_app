@@ -60,31 +60,105 @@ class _AddClientFormState extends State<AddClientForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: buildTextField('Nombre', _nombreController),
+                    child: buildTextField(
+                      'Nombre',
+                      _nombreController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Nombre';
+                        } else if (RegExp(r'[0-9]').hasMatch(value)) {
+                          return 'El nombre no debe contener números';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child: buildTextField('Teléfono', _telefonoController),
+                    child: buildTextField(
+                      'Teléfono',
+                      _telefonoController,
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Teléfono';
+                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'El teléfono debe contener solo números';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child: buildTextField('Correo', _correoController),
+                    child: buildTextField(
+                      'Correo',
+                      _correoController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Correo';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child: buildTextField('RFC', _rfcController),
+                    child: buildTextField(
+                      'RFC',
+                      _rfcController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa RFC';
+                        } else if (value.length != 13) {
+                          return 'El RFC debe tener 13 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child: buildTextField('CURP', _curpController,
-                        enabled: widget.cliente == null),
+                    child: buildTextField(
+                      'CURP',
+                      _curpController,
+                      enabled: widget.cliente == null,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa CURP';
+                        } else if (value.length != 18) {
+                          return 'La CURP debe tener 18 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child: buildTextField('Domicilio', _domicilioController),
+                    child: buildTextField(
+                      'Domicilio',
+                      _domicilioController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Domicilio';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
-                    child:
-                        buildTextField('Días Crédito', _diasCreditoController),
+                    child: buildTextField(
+                      'Días Crédito',
+                      _diasCreditoController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Días Crédito';
+                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'Los días de crédito deben ser solo números';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   Center(
                     child: ElevatedButton(
-                      onPressed: _submitForm,
+                      onPressed: () => _submitForm(context),
                       child: Text(widget.cliente == null
                           ? 'Agregar Cliente'
                           : 'Actualizar Cliente'),
@@ -103,25 +177,21 @@ class _AddClientFormState extends State<AddClientForm> {
   }
 
   Widget buildTextField(String label, TextEditingController controller,
-      {bool enabled = true}) {
+      {bool enabled = true, TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
     return SizedBox(
       height: 80,
       width: 400,
       child: TextFormField(
         controller: controller,
         enabled: enabled,
+        keyboardType: keyboardType,
         decoration: InputDecoration(labelText: label),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor ingresa $label';
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }
 
-  Future<void> _submitForm() async {
+  Future<void> _submitForm(context) async {
     if (!_formKey.currentState!.validate()) {
       return; // Detener si el formulario no es válido
     }
@@ -151,33 +221,38 @@ class _AddClientFormState extends State<AddClientForm> {
             'Confirmación',
             widget.cliente == null
                 ? 'Cliente Guardado Exitosamente'
-                : 'Cliente Actualizado Exitosamente');
+                : 'Cliente Actualizado Exitosamente',
+            () {
+              Navigator.pop(context, true); // Cerrar el diálogo y regresar a la página anterior
+            });
       } else {
-        _showDialog('Advertencia', 'No se pudo completar la operación');
+        _showDialog('Error', 'No se pudo guardar el cliente');
       }
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${error.toString()}')),
-      );
+    } catch (e) {
+      _showDialog('Error', 'Ocurrió un error: $e');
     }
   }
 
-  void _showDialog(String title, String content) {
+  void _showDialog(String title, String message, [VoidCallback? onConfirm]) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _formKey.currentState!.reset();
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+                if (onConfirm != null) {
+                  onConfirm();
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

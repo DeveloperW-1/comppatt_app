@@ -20,13 +20,13 @@ class Venta {
   // Deserialización desde el mapa
   factory Venta.fromMap(Map<String, dynamic> map) {
     return Venta(
-      id: int.parse(map['ID']),
-      montoTotal: double.parse(map['Monto_Total']),
-      plazoMeses: int.parse(map['Plazo_Meses']),
-      fechaVenta: DateTime.parse(map['Fecha_Venta']),
-      fechaCorte: DateTime.parse(map['Fecha_Corte']),
-      tazaIntereses: double.parse(map['Taza_Intereses']),
-      cliente: map['Cliente'].toString(),
+      id: map['id'] != null ? int.parse(map['id'].toString()) : null,
+      montoTotal: map['Monto_Total'] != null ? double.parse(map['Monto_Total'].toString()) : 0.0,
+      plazoMeses: map['Plazo_Meses'] != null ? int.parse(map['Plazo_Meses'].toString()) : 0,
+      fechaVenta: map['Fecha_Venta'] != null ? DateTime.parse(map['Fecha_Venta']) : DateTime.now(),
+      fechaCorte: map['Fecha_Corte'] != null ? DateTime.parse(map['Fecha_Corte']) : DateTime.now(),
+      tazaIntereses: map['Taza_Intereses'] != null ? double.parse(map['Taza_Intereses'].toString()) : 0.0,
+      cliente: map['Cliente'] != null ? map['Cliente'].toString() : null,
     );
   }
 

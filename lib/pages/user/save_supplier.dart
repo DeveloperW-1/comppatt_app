@@ -18,6 +18,12 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _contactoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
+  final TextEditingController _telefonoProveedorController = TextEditingController();
+  final TextEditingController _correoProveedorController = TextEditingController();
+  final TextEditingController _rfcProveedorController = TextEditingController();
+  final TextEditingController _curpProveedorController = TextEditingController();
+  final TextEditingController _domicilioProveedorController = TextEditingController();
+  final TextEditingController _diasCreditoProveedorController = TextEditingController();
 
   @override
   void initState() {
@@ -88,20 +94,16 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
   }
 
   Widget buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text}) {
+      {bool enabled = true, TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
     return SizedBox(
       height: 80,
       width: 400,
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: label),
+        enabled: enabled,
         keyboardType: keyboardType,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor ingresa $label';
-          }
-          return null;
-        },
+        decoration: InputDecoration(labelText: label),
+        validator: validator,
       ),
     );
   }
@@ -112,7 +114,6 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-        drawer: SideBar(title: widget.title),
         appBar: AppBar(
           title: Text("Guardar Proveedor"),
           leading: IconButton(
@@ -125,25 +126,123 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(),
-                buildTextField("Nombre del Proveedor", _nombreController),
-                buildTextField(
-                    "Contacto (Teléfono o Correo)", _contactoController),
-                buildTextField("Dirección", _direccionController),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Text(widget.proveedor == null
-                      ? 'Agregar Proveedor'
-                      : 'Actualizar Proveedor'),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: buildTextField(
+                      'Nombre del Proveedor',
+                      _nombreController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Nombre del Proveedor';
+                        } else if (RegExp(r'[0-9]').hasMatch(value)) {
+                          return 'El nombre no debe contener números';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'Teléfono del Proveedor',
+                      _telefonoProveedorController,
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Teléfono del Proveedor';
+                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'El teléfono debe contener solo números';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'Correo del Proveedor',
+                      _correoProveedorController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Correo del Proveedor';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'RFC del Proveedor',
+                      _rfcProveedorController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa RFC del Proveedor';
+                        } else if (value.length != 13) {
+                          return 'El RFC debe tener 13 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'CURP del Proveedor',
+                      _curpProveedorController,
+                      enabled: widget.proveedor == null,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa CURP del Proveedor';
+                        } else if (value.length != 18) {
+                          return 'La CURP debe tener 18 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'Domicilio del Proveedor',
+                      _domicilioProveedorController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Domicilio del Proveedor';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: buildTextField(
+                      'Días Crédito del Proveedor',
+                      _diasCreditoProveedorController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingresa Días Crédito del Proveedor';
+                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'Los días de crédito deben ser solo números';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submitForm,
+                      child: Text(widget.proveedor == null
+                          ? 'Agregar Proveedor'
+                          : 'Actualizar Proveedor'),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
+        ),
+        drawer: SideBar(
+          title: 'Jefe Departamento',
         ),
       ),
     );

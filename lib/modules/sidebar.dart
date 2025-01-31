@@ -9,6 +9,7 @@ import 'package:comppatt/pages/user/view_client.dart';
 import 'package:comppatt/pages/user/view_compras.dart';
 import 'package:comppatt/pages/user/view_services.dart';
 import 'package:comppatt/pages/user/view_supplier.dart';
+import 'package:comppatt/pages/user/view_ventas.dart';
 import 'package:flutter/material.dart';
 
 // import '../pages/sell.dart';
@@ -258,12 +259,12 @@ class _SideBarState extends State<SideBar> {
                         title: const Text('Relacion de Ventas'),
                         textColor: Colors.white,
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => ViewServices(
-                          //               title: widget.title,
-                          //             )));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ViewVentas(
+                                        title: widget.title,
+                                      )));
                         },
                       ),
 

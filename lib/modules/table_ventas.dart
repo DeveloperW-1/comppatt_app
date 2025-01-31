@@ -1,8 +1,6 @@
 import 'dart:io';
-
-import 'package:comppatt/controller/proveedorcontroller.dart';
-import 'package:comppatt/models/proveedor.dart';
-// import 'package:comppatt/modules/table_venta.dart';
+import 'package:comppatt/controller/ventacontroller.dart';
+import 'package:comppatt/models/venta.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,15 +16,15 @@ class TableVentas extends StatefulWidget {
 }
 
 class _TableVentas extends State<TableVentas> {
-  List<Proveedor> proveedores = [];
+  List<Venta> ventas = [];
 
   @override
   void initState() {
     super.initState();
-    fetchProveedores(); // Cargar la lista inicial de proveedores
+    fetchVentas(); // Cargar la lista inicial de ventas
   }
 
-    Future<void> generatePDF(List<Proveedor> proveedores, BuildContext context) async {
+  Future<void> generatePDF(List<Venta> ventas, BuildContext context) async {
     try {
       final pdf = pw.Document();
 
@@ -46,24 +44,33 @@ class _TableVentas extends State<TableVentas> {
                   // Encabezado de la tabla
                   pw.TableRow(
                     children: [
+                      pw.Text('ID',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                       pw.Text('Monto Total',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Telefono',
+                      pw.Text('Plazo Meses',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Correo Electronico',
+                      pw.Text('Fecha Venta',
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('RFC',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
+                      pw.Text('Fecha Corte',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Taza Intereses',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      pw.Text('Cliente',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                     ],
                   ),
                   // Filas de datos
-                  ...proveedores.map(
-                    (proveedor) => pw.TableRow(
+                  ...ventas.map(
+                    (venta) => pw.TableRow(
                       children: [
-                        pw.Text(proveedor.id.toString()),
-                        pw.Text(proveedor.nombre),
-                        pw.Text(proveedor.contacto),
-                        pw.Text(proveedor.direccion)
+                        pw.Text(venta.id.toString()),
+                        pw.Text(venta.montoTotal.toString()),
+                        pw.Text(venta.plazoMeses.toString()),
+                        pw.Text(venta.fechaVenta.toIso8601String()),
+                        pw.Text(venta.fechaCorte.toIso8601String()),
+                        pw.Text(venta.tazaIntereses.toString()),
+                        pw.Text(venta.cliente.toString()),
                       ],
                     ),
                   ),
@@ -76,8 +83,8 @@ class _TableVentas extends State<TableVentas> {
 
       // Usar FilePicker para abrir el explorador de archivos
       String? savePath = await FilePicker.platform.saveFile(
-        dialogTitle: 'Guardar Reporte de proveedores',
-        fileName: 'reporte_proveedores.pdf',
+        dialogTitle: 'Guardar Reporte de ventas',
+        fileName: 'reporte_ventas.pdf',
         allowedExtensions: ['pdf'], // Restringir a solo archivos PDF
         type: FileType.custom,
       );
@@ -106,15 +113,15 @@ class _TableVentas extends State<TableVentas> {
     }
   }
 
-  // Función para obtener los proveedores desde el servidor
-  Future<void> fetchProveedores() async {
+  // Función para obtener las ventas desde el servidor
+  Future<void> fetchVentas() async {
     try {
-      var fetchedproveedores = await ProveedorController().getProveedores();
+      var fetchedVentas = await Ventacontroller().getVentas();
       setState(() {
-        proveedores = fetchedproveedores;
+        ventas = fetchedVentas;
       });
     } catch (e) {
-      print('Error al cargar los proveedores: $e');
+      print('Error al cargar las ventas: $e');
     }
   }
 
@@ -124,9 +131,8 @@ class _TableVentas extends State<TableVentas> {
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: Color.fromRGBO(33, 33, 33, 100),
-        body: FutureBuilder<List<Proveedor>>(
-          future: ProveedorController()
-              .getProveedores(), 
+        body: FutureBuilder<List<Venta>>(
+          future: Ventacontroller().getVentas(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -136,43 +142,62 @@ class _TableVentas extends State<TableVentas> {
 
             if (snapshot.hasError) {
               return Center(
-                  child: Text('Error al cargar los proveedores: ${snapshot.error}'));
+                  child: Text('Error al cargar las ventas: ${snapshot.error}'));
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No hay proveedores disponibles'));
+              return const Center(child: Text('No hay ventas disponibles'));
             }
 
-            // Mostrar la tabla de proveedores
+            // Mostrar la tabla de ventas
             return Container(
-              // color: Colors.black,
               padding: EdgeInsets.only(top: 50, left: 45, right: 100),
               child: ListView(
                 children: [
                   ElevatedButton(onPressed: () async {
-                    await generatePDF(proveedores, context);
+                    await generatePDF(snapshot.data!, context);
                   }, child: Text("Guardar Reporte")),
                   DataTable(
                     columns: const [
                       DataColumn(
                           label: Text(
-                        'Nombre',
+                        'ID',
                       )),
                       DataColumn(
                           label: Text(
-                        'Contacto',
+                        'Monto Total',
                       )),
                       DataColumn(
                           label: Text(
-                        'Direccion',
+                        'Plazo Meses',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Fecha Venta',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Fecha Corte',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Taza Intereses',
+                      )),
+                      DataColumn(
+                          label: Text(
+                        'Cliente',
                       )),
                     ],
-                    rows: proveedores
+                    rows: snapshot.data!
                         .map((item) => DataRow(
                               cells: [
-                                DataCell(Text(item.nombre)),
-                                DataCell(Text(item.contacto)),
-                                DataCell(Text(item.direccion))
+                                DataCell(Text(item.id.toString())),
+                                DataCell(Text(item.montoTotal.toString())),
+                                DataCell(Text(item.plazoMeses.toString())),
+                                DataCell(Text(item.fechaVenta.toIso8601String())),
+                                DataCell(Text(item.fechaCorte.toIso8601String())),
+                                DataCell(Text(item.tazaIntereses.toString())),
+                                DataCell(Text(item.cliente.toString())),
                               ],
                             ))
                         .toList(),

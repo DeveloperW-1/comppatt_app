@@ -1,5 +1,4 @@
 import 'package:comppatt/modules/sidebar.dart';
-import 'package:comppatt/modules/table_clientes.dart';
 import 'package:comppatt/modules/table_compras.dart';
 import 'package:flutter/material.dart';
 // import 'package:comppatt/controller/clientecontroller.dart';
