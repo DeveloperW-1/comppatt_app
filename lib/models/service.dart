@@ -30,7 +30,7 @@ class Service {
         (e) => e.toString().split('.').last.toLowerCase() == map['Tipo'].toLowerCase(),
         orElse: () => TipoServicio.servicio, // Valor predeterminado si no se encuentra
       ),
-      precioVenta: double.parse(map['PrecioVenta'].toString()) ?? 0.0,
+      precioVenta: double.parse(map['PrecioVenta'].toString()),
       iva: double.parse(map['IVA'])
     );
   }

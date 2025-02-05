@@ -26,7 +26,6 @@ class _SaveVenta extends State<SaveVenta> {
   Cliente? _clienteSeleccionado;
   Service? _servicioSeleccionado;
 
-  DateTime? _selectedDate;
 
   final TextEditingController _cantidadServicio = TextEditingController();
   final TextEditingController _precioServicio = TextEditingController();
@@ -35,7 +34,7 @@ class _SaveVenta extends State<SaveVenta> {
   final List<VentaDetalle> _detalleVenta = [];
 
   final List<int> _mesesDisponibles = [3, 6, 9, 12, 18];
-  TextEditingController _interesPorMes = TextEditingController();
+  final TextEditingController _interesPorMes = TextEditingController();
 
   @override
   void initState() {
@@ -56,20 +55,6 @@ class _SaveVenta extends State<SaveVenta> {
     setState(() {
       servicios = _servicios;
     });
-  }
-
-  Future<void> _pickDate() async {
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    }
   }
 
   @override
@@ -132,7 +117,7 @@ class _SaveVenta extends State<SaveVenta> {
                           spacing: 130,
                           children: [
                             SizedBox(
-                              width: 540,
+                              width: 350,
                             ),
                             Row(
                               spacing: 30,
@@ -251,7 +236,7 @@ class _SaveVenta extends State<SaveVenta> {
                                   spacing: 10,
                                   children: [
                                     SizedBox(
-                                      width: 725,
+                                      width: 460,
                                     ),
                                     SizedBox(
                                       height: 50,
@@ -296,7 +281,7 @@ class _SaveVenta extends State<SaveVenta> {
                                   spacing: 10,
                                   children: [
                                     SizedBox(
-                                      width: 700,
+                                      width: 460,
                                     ),
                                     SizedBox(
                                       height: 50,
