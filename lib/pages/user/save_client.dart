@@ -1,7 +1,10 @@
 import 'package:comppatt/controller/clientecontroller.dart';
 import 'package:comppatt/models/cliente.dart';
 import 'package:comppatt/modules/sidebar.dart';
+import 'package:comppatt/pages/user/home_page_user.dart';
 import 'package:flutter/material.dart';
+import 'package:comppatt/validate/validaciones.dart';
+import 'package:flutter/services.dart';
 
 class AddClientForm extends StatefulWidget {
   final Cliente? cliente; // Parámetro opcional para editar
@@ -63,6 +66,7 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Nombre',
                       _nombreController,
+                      inputFormatters: [FormatoLetrasEspacios()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Nombre';
@@ -77,6 +81,7 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Teléfono',
                       _telefonoController,
+                      inputFormatters: [FormatoNumerosLongitudMaxima()],
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -92,18 +97,15 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Correo',
                       _correoController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Correo';
-                        }
-                        return null;
-                      },
+                      inputFormatters: [CorreoTextFormatter()],
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                   Center(
                     child: buildTextField(
                       'RFC',
                       _rfcController,
+                      inputFormatters: [RFCTextFormatter()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa RFC';
@@ -118,21 +120,15 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'CURP',
                       _curpController,
+                      inputFormatters: [CURPTextFormatter()],
                       enabled: widget.cliente == null,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa CURP';
-                        } else if (value.length != 18) {
-                          return 'La CURP debe tener 18 caracteres';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   Center(
                     child: buildTextField(
                       'Domicilio',
                       _domicilioController,
+                      inputFormatters: [AddressTextFormatter()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Domicilio';
@@ -146,6 +142,7 @@ class _AddClientFormState extends State<AddClientForm> {
                       'Días Crédito',
                       _diasCreditoController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [DaysCreditTextFormatter()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Días Crédito';
@@ -176,8 +173,14 @@ class _AddClientFormState extends State<AddClientForm> {
     );
   }
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {bool enabled = true, TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool enabled = true,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters, // Agregamos el parámetro
+  }) {
     return SizedBox(
       height: 80,
       width: 400,
@@ -185,6 +188,7 @@ class _AddClientFormState extends State<AddClientForm> {
         controller: controller,
         enabled: enabled,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters, // Aplicamos los formatters
         decoration: InputDecoration(labelText: label),
         validator: validator,
       ),
@@ -221,10 +225,10 @@ class _AddClientFormState extends State<AddClientForm> {
             'Confirmación',
             widget.cliente == null
                 ? 'Cliente Guardado Exitosamente'
-                : 'Cliente Actualizado Exitosamente',
-            () {
-              Navigator.pop(context, true); // Cerrar el diálogo y regresar a la página anterior
-            });
+                : 'Cliente Actualizado Exitosamente', () {
+          Navigator.pop(context,
+              true); // Cerrar el diálogo y regresar a la página anterior
+        });
       } else {
         _showDialog('Error', 'No se pudo guardar el cliente');
       }
@@ -244,9 +248,11 @@ class _AddClientFormState extends State<AddClientForm> {
             TextButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Cerrar el diálogo
-                if (onConfirm != null) {
-                  onConfirm();
+                if (title == 'Confirmación') {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePageUser()));
+                } else {
+                  Navigator.pop(context);
                 }
               },
             ),

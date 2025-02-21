@@ -7,8 +7,11 @@ import 'package:comppatt/models/cliente.dart';
 import 'package:comppatt/models/service.dart';
 import 'package:comppatt/models/venta.dart';
 import 'package:comppatt/models/ventaDetalle.dart';
+import 'package:comppatt/pages/user/home_page_user.dart';
+import 'package:comppatt/validate/validaciones.dart';
 import 'package:flutter/material.dart';
 import '../../modules/sidebar.dart';
+import 'package:flutter/services.dart';
 
 class SaveVenta extends StatefulWidget {
   const SaveVenta({super.key});
@@ -25,7 +28,6 @@ class _SaveVenta extends State<SaveVenta> {
 
   Cliente? _clienteSeleccionado;
   Service? _servicioSeleccionado;
-
 
   final TextEditingController _cantidadServicio = TextEditingController();
   final TextEditingController _precioServicio = TextEditingController();
@@ -258,7 +260,11 @@ class _SaveVenta extends State<SaveVenta> {
                                       height: 50,
                                       width: 100,
                                       child: buildTextField(
-                                          "Cantidad", _cantidadServicio),
+                                          "Cantidad", _cantidadServicio,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FormatoNumerosLongitudMaxima()
+                                          ]),
                                     ),
                                     SizedBox(
                                       width: 20,
@@ -424,14 +430,13 @@ class _SaveVenta extends State<SaveVenta> {
           cliente: _clienteSeleccionado?.curp);
 
       await Ventacontroller().saveVenta(venta, _detalleVenta);
-      _showDialog("Registro Completado", "La Venta se registro correctamente");
+      _showDialog("Confirmación", "La Venta se registro correctamente");
       setState(() {
         _clienteSeleccionado = null;
         _servicioSeleccionado = null;
         _detalleVenta.clear();
         _interesPorMes.clear();
         _mesesVenta = null;
-
       });
     } catch (e) {
       _showDialog('Error', 'Hubo un problema al guardar los detalles: $e');
@@ -464,35 +469,38 @@ class _SaveVenta extends State<SaveVenta> {
       return;
     }
 
-    final cantidaServicios = double.parse(_cantidadServicio.text);
+    final cantidaServicios = double.tryParse(_cantidadServicio.text);
+
     final precioVenta = _servicioSeleccionado?.precioVenta;
 
     final detalle = VentaDetalle(
         fechaVenta: DateTime.now(),
         idServicio: _servicioSeleccionado?.id,
-        subtotal: (double.parse(_precioServicio.text) * cantidaServicios),
-        cantidadServicios: int.parse(_cantidadServicio.text)
-        );
+        subtotal: (double.parse(_precioServicio.text) * cantidaServicios!),
+        cantidadServicios: int.parse(_cantidadServicio.text));
     setState(() {
       _detalleVenta.add(detalle);
     });
   }
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {bool enabled = true}) {
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool enabled = true,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters, // Agregamos el parámetro
+  }) {
     return SizedBox(
       height: 80,
       width: 400,
       child: TextFormField(
         controller: controller,
         enabled: enabled,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters, // Aplicamos los formatters
         decoration: InputDecoration(labelText: label),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor ingresa $label';
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }
@@ -506,7 +514,12 @@ class _SaveVenta extends State<SaveVenta> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (title == 'Confirmación') {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePageUser()));
+              } else {
+                Navigator.of(context).pop();
+              }
             },
             child: const Text('OK'),
           ),

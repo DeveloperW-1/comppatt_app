@@ -1,5 +1,7 @@
 import 'package:comppatt/controller/compracontroller.dart';
 import 'package:comppatt/models/compraDetalle.dart';
+import 'package:comppatt/pages/user/home_page_user.dart';
+import 'package:comppatt/validate/validaciones.dart';
 import 'package:flutter/material.dart';
 import 'package:comppatt/controller/proveedorcontroller.dart';
 import 'package:comppatt/controller/servicecontroller.dart';
@@ -7,6 +9,7 @@ import 'package:comppatt/models/compra.dart';
 import 'package:comppatt/models/proveedor.dart';
 import 'package:comppatt/models/service.dart';
 import 'package:comppatt/modules/sidebar.dart';
+import 'package:comppatt/validate/components.dart';
 
 class AddCompraForm extends StatefulWidget {
   final Compra? compra;
@@ -16,25 +19,6 @@ class AddCompraForm extends StatefulWidget {
 
   @override
   _AddCompraFormState createState() => _AddCompraFormState();
-}
-
-Widget buildTextField(String label, TextEditingController controller,
-    {TextInputType keyboardType = TextInputType.text}) {
-  return SizedBox(
-    height: 80,
-    width: 200,
-    child: TextFormField(
-      controller: controller,
-      decoration: InputDecoration(labelText: label),
-      keyboardType: keyboardType,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor ingresa $label';
-        }
-        return null;
-      },
-    ),
-  );
 }
 
 class _AddCompraFormState extends State<AddCompraForm> {
@@ -123,10 +107,13 @@ class _AddCompraFormState extends State<AddCompraForm> {
                       )),
                   SizedBox(height: 20),
                   buildTextField("Cantidad", _cantidadController,
+                      inputFormatters: [FormatoNumerosLongitudMaxima()],
                       keyboardType: TextInputType.number),
                   buildTextField("Precio Unitario", _precioUnitarioController,
+                      inputFormatters: [FormatoNumerosLongitudMaxima()],
                       keyboardType: TextInputType.number),
                   buildTextField("IVA", _ivaController,
+                      inputFormatters: [IVAFormatter()],
                       keyboardType: TextInputType.number),
                   SizedBox(
                       width: 200,
@@ -222,15 +209,15 @@ class _AddCompraFormState extends State<AddCompraForm> {
         fecha: DateTime.now(),
       );
       await CompraController().saveCompraWithDetails(compra, _detalleCompra);
-      _showDialog("Registro Completado", "La Compra se registro correctamente");
-          setState(() {
-      _detalleCompra.clear();
-      _proveedorSeleccionado = null;
-      _productoSeleccionado = null;
-      _cantidadController.clear();
-      _precioUnitarioController.clear();
-      _ivaController.clear();
-    });
+      _showDialog("Confirmación", "La Compra se registro correctamente");
+      setState(() {
+        _detalleCompra.clear();
+        _proveedorSeleccionado = null;
+        _productoSeleccionado = null;
+        _cantidadController.clear();
+        _precioUnitarioController.clear();
+        _ivaController.clear();
+      });
     } catch (error) {
       _showDialog('Error', 'Hubo un problema al guardar los detalles: $error');
       print(error);
@@ -289,7 +276,12 @@ class _AddCompraFormState extends State<AddCompraForm> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (title == 'Confirmación') {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePageUser()));
+              } else {
+                Navigator.of(context).pop();
+              }
             },
             child: const Text('OK'),
           ),

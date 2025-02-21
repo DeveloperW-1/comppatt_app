@@ -1,7 +1,10 @@
 import 'package:comppatt/controller/proveedorcontroller.dart';
 import 'package:comppatt/models/proveedor.dart';
 import 'package:comppatt/modules/sidebar.dart';
+import 'package:comppatt/pages/user/home_page_user.dart';
+import 'package:comppatt/validate/validaciones.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddProveedorForm extends StatefulWidget {
   final Proveedor? proveedor; // Proveedor existente (para editar)
@@ -18,12 +21,17 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _contactoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
-  final TextEditingController _telefonoProveedorController = TextEditingController();
-  final TextEditingController _correoProveedorController = TextEditingController();
+  final TextEditingController _telefonoProveedorController =
+      TextEditingController();
+  final TextEditingController _correoProveedorController =
+      TextEditingController();
   final TextEditingController _rfcProveedorController = TextEditingController();
-  final TextEditingController _curpProveedorController = TextEditingController();
-  final TextEditingController _domicilioProveedorController = TextEditingController();
-  final TextEditingController _diasCreditoProveedorController = TextEditingController();
+  final TextEditingController _curpProveedorController =
+      TextEditingController();
+  final TextEditingController _domicilioProveedorController =
+      TextEditingController();
+  final TextEditingController _diasCreditoProveedorController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -53,7 +61,12 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (title == 'Confirmación') {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => HomePageUser()));
+              } else {
+                Navigator.of(context).pop();
+              } //
             },
             child: Text('OK'),
           ),
@@ -87,14 +100,19 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
           widget.proveedor == null
               ? 'Proveedor Guardado Exitosamente'
               : 'Proveedor Actualizado Exitosamente');
-      // _formKey.currentState!.reset();
     } else {
       _showDialog('Advertencia', 'No se pudo completar la operación');
     }
   }
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {bool enabled = true, TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool enabled = true,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters, // Agregamos el parámetro
+  }) {
     return SizedBox(
       height: 80,
       width: 400,
@@ -102,6 +120,7 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
         controller: controller,
         enabled: enabled,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters, // Aplicamos los formatters
         decoration: InputDecoration(labelText: label),
         validator: validator,
       ),
@@ -135,6 +154,7 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                     child: buildTextField(
                       'Nombre del Proveedor',
                       _nombreController,
+                      inputFormatters: [FormatoLetrasEspacios()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Nombre del Proveedor';
@@ -149,6 +169,7 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                     child: buildTextField(
                       'Teléfono del Proveedor',
                       _telefonoProveedorController,
+                      inputFormatters: [FormatoNumerosLongitudMaxima()],
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -163,6 +184,7 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                   Center(
                     child: buildTextField(
                       'Correo del Proveedor',
+                      inputFormatters: [CorreoTextFormatter()],
                       _correoProveedorController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -176,6 +198,7 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                     child: buildTextField(
                       'RFC del Proveedor',
                       _rfcProveedorController,
+                      inputFormatters: [RFCTextFormatter()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa RFC del Proveedor';
@@ -188,22 +211,8 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                   ),
                   Center(
                     child: buildTextField(
-                      'CURP del Proveedor',
-                      _curpProveedorController,
-                      enabled: widget.proveedor == null,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa CURP del Proveedor';
-                        } else if (value.length != 18) {
-                          return 'La CURP debe tener 18 caracteres';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: buildTextField(
                       'Domicilio del Proveedor',
+                      inputFormatters: [AddressTextFormatter()],
                       _domicilioProveedorController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -216,16 +225,9 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                   Center(
                     child: buildTextField(
                       'Días Crédito del Proveedor',
+                      inputFormatters: [DaysCreditTextFormatter()],
                       _diasCreditoProveedorController,
                       keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Días Crédito del Proveedor';
-                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                          return 'Los días de crédito deben ser solo números';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   Center(

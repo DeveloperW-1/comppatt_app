@@ -1,7 +1,10 @@
 import 'package:comppatt/modules/sidebar.dart';
+import 'package:comppatt/pages/user/home_page_user.dart';
 import 'package:flutter/material.dart';
 import 'package:comppatt/models/service.dart';
 import 'package:comppatt/controller/servicecontroller.dart';
+import 'package:comppatt/validate/validaciones.dart';
+import 'package:flutter/services.dart';
 
 class AddServiceForm extends StatefulWidget {
   final Service? service;
@@ -42,7 +45,12 @@ class _AddServiceFormState extends State<AddServiceForm> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if(title == 'Confirmación') {
+               Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePageUser()));
+              } else {
+                Navigator.pop(context);
+              }
             },
             child: Text('OK'),
           ),
@@ -122,7 +130,6 @@ class _AddServiceFormState extends State<AddServiceForm> {
             widget.service == null
                 ? 'Servicio Guardado'
                 : 'Servicio Actualizado');
-        _formKey.currentState!.reset();
         setState(() {});
       } else {
         _showDialog('Advertencia', 'No se pudo completar la operación');
@@ -134,30 +141,29 @@ class _AddServiceFormState extends State<AddServiceForm> {
     }
   }
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text, bool enabled = true}) {
+ 
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool enabled = true,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters, // Agregamos el parámetro
+  }) {
     return SizedBox(
       height: 80,
       width: 400,
       child: TextFormField(
         controller: controller,
-        keyboardType: keyboardType,
         enabled: enabled,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters, // Aplicamos los formatters
         decoration: InputDecoration(labelText: label),
-        validator: (value) {
-          if (enabled && (value == null || value.isEmpty)) {
-            return 'Por favor ingresa $label';
-          }
-          if (enabled &&
-              keyboardType == TextInputType.number &&
-              int.tryParse(value!) == null) {
-            return 'Por favor ingresa un número válido';
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -207,11 +213,11 @@ class _AddServiceFormState extends State<AddServiceForm> {
                       },
                     ),
                   ),
-                  buildTextField("Nombre", _nombreController),
-                  buildTextField("Descripción", _descripcionController),
-                  buildTextField("Precio Venta", _precioVentaController,
+                  buildTextField("Nombre", _nombreController, inputFormatters: [FormatoLetrasEspacios()]),
+                  buildTextField("Descripción", _descripcionController, inputFormatters: [FormatoLetrasEspacios()]),
+                  buildTextField("Precio Venta", _precioVentaController,inputFormatters: [FormatoNumerosLongitudMaxima()],
                       keyboardType: TextInputType.number),
-                  buildTextField("IVA", _ivaController),
+                  buildTextField("IVA", _ivaController, inputFormatters: [IVAFormatter()]),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submitForm,
