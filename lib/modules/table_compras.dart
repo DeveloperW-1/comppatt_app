@@ -46,18 +46,21 @@ class _TableComprasState extends State<TableCompras> {
     pdf.addPage(
       pw.Page(
         build: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Text(
-              "Detalles de la Compra (ID: ${compra.id})",
+              "Detalles de Compra {${compra.id}}",
               style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 20),
             pw.Table(
               border: pw.TableBorder.all(),
               children: [
                 // Encabezado
                 pw.TableRow(
                   children: [
+                    pw.Text('ID',
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                     pw.Text('Cantidad',
                         style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                     pw.Text('Precio Unitario',
@@ -72,6 +75,7 @@ class _TableComprasState extends State<TableCompras> {
                 ...detalles.map(
                   (detalle) => pw.TableRow(
                     children: [
+                      pw.Text(detalle.id.toString()),
                       pw.Text(detalle.cantidad.toString()),
                       pw.Text(detalle.precioUnitario.toStringAsFixed(2)),
                       pw.Text(detalle.iva.toStringAsFixed(2)),
@@ -97,7 +101,7 @@ class _TableComprasState extends State<TableCompras> {
     // Guardar PDF
     String? savePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Guardar Detalles de la Compra',
-      fileName: 'detalle_compra_${compra.id}.pdf',
+      fileName: 'detalle_compra.pdf',
       allowedExtensions: ['pdf'],
       type: FileType.custom,
     );

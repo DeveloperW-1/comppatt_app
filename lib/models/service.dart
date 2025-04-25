@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 enum TipoServicio {
   servicio, // Servicios proporcionados por la empresa
   producto, // Productos adquiridos de terceros

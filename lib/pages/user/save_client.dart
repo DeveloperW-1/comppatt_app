@@ -66,7 +66,7 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Nombre',
                       _nombreController,
-                      inputFormatters: [FormatoLetrasEspacios()],
+                      inputFormatters: [FormatoLetrasEspacios(), FormatoLongitudMaximaTexto()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Nombre';
@@ -97,7 +97,7 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Correo',
                       _correoController,
-                      inputFormatters: [CorreoTextFormatter()],
+                      inputFormatters: [CorreoTextFormatter(), FormatoLongitudMaximaTexto()],
                       keyboardType: TextInputType.emailAddress,
                     ),
                   ),
@@ -128,7 +128,7 @@ class _AddClientFormState extends State<AddClientForm> {
                     child: buildTextField(
                       'Domicilio',
                       _domicilioController,
-                      inputFormatters: [AddressTextFormatter()],
+                      inputFormatters: [AddressTextFormatter(), FormatoLongitudMaximaTexto()],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor ingresa Domicilio';

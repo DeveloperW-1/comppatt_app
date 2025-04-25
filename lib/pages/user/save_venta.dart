@@ -261,10 +261,7 @@ class _SaveVenta extends State<SaveVenta> {
                                       width: 100,
                                       child: buildTextField(
                                           "Cantidad", _cantidadServicio,
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: [
-                                            FormatoNumerosLongitudMaxima()
-                                          ]),
+                                          keyboardType: TextInputType.number),
                                     ),
                                     SizedBox(
                                       width: 20,
@@ -332,6 +329,7 @@ class _SaveVenta extends State<SaveVenta> {
                                       height: 50,
                                       width: 150,
                                       child: buildTextField(
+                                        inputFormatters: [InteresPorMesFormatter()],
                                           "Interes por Mes (%)",
                                           _interesPorMes),
                                     ),
@@ -378,21 +376,6 @@ class _SaveVenta extends State<SaveVenta> {
                                             "No hay detalles agregados."),
                                   ],
                                 )
-                                // SizedBox(
-                                //   height: 50,
-                                //   width: 100,
-                                //   child: TextFormField(
-                                //     controller: TextEditingController(
-                                //       text: _detalleVenta.isNotEmpty
-                                //           ? _calcularTotalVenta()
-                                //               .toStringAsFixed(2)
-                                //           : '0.00',
-                                //     ),
-                                //     enabled: false,
-                                //     decoration: InputDecoration(
-                                //         labelText: "Total a Pagar"),
-                                //   ),
-                                // )
                               ]
                             ],
                           ),

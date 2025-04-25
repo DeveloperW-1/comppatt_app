@@ -15,6 +15,24 @@ class FormatoLetrasEspacios extends TextInputFormatter {
   }
 }
 
+class FormatoLongitudMaximaTexto extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    // Permite solo letras (mayúsculas y minúsculas) y espacios
+    String filteredText = newValue.text;
+
+    if(filteredText.length > 50) {
+      filteredText = filteredText.substring(0, 50);
+    }
+
+    return TextEditingValue(
+      text: filteredText,
+      selection: TextSelection.collapsed(offset: filteredText.length),
+    );
+  }
+}
+
 class FormatoNumerosLongitudMaximaIVA extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -61,7 +79,7 @@ class RFCTextFormatter extends TextInputFormatter {
     );
   }
 }
-
+// Formateo para el IVA, en caso de que sea mayor a 0.16
 class IVAFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -70,19 +88,12 @@ class IVAFormatter extends TextInputFormatter {
 
     // Limitar el valor máximo a 16
     double value = double.tryParse(filteredText) ?? 0.0;
-    if (value > 16) value = 16.0; 
-
-    // Asegurarse de que solo haya un punto decimal
-    // if (filteredText.contains('.')) {
-    //   List<String> parts = filteredText.split('.');
-    //   if (parts.length > 2) {
-    //     filteredText = parts[0] + '.' + parts[1];
-    //   }  
-    // }
+    if (value > 0.16) value = 0.16;
 
     return TextEditingValue(
       text: value.toString(),
-      selection: TextSelection.collapsed(offset: filteredText.toString().length),
+      selection:
+          TextSelection.collapsed(offset: filteredText.toString().length),
     );
   }
 }
@@ -99,6 +110,32 @@ class CURPTextFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: filteredText,
       selection: TextSelection.collapsed(offset: filteredText.length),
+    );
+  }
+}
+
+// Interés por mes en porcentaje (máximo 100)
+class InteresPorMesFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String filteredText = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Limitar el valor máximo a 100
+    double value = double.tryParse(filteredText) ?? 0.0;
+    if (value > 100) value = 100.0;
+
+    // Asegurarse de que solo haya un punto decimal
+    if (filteredText.contains('.')) {
+      List<String> parts = filteredText.split('.');
+      if (parts.length > 3) {
+        filteredText = parts[0] + '.' + parts[1];
+      }
+    }
+
+    return TextEditingValue(
+      text: value.toString(),
+      selection: TextSelection.collapsed(offset: value.toString().length),
     );
   }
 }

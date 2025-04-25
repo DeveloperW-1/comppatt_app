@@ -21,17 +21,6 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _contactoController = TextEditingController();
   final TextEditingController _direccionController = TextEditingController();
-  final TextEditingController _telefonoProveedorController =
-      TextEditingController();
-  final TextEditingController _correoProveedorController =
-      TextEditingController();
-  final TextEditingController _rfcProveedorController = TextEditingController();
-  final TextEditingController _curpProveedorController =
-      TextEditingController();
-  final TextEditingController _domicilioProveedorController =
-      TextEditingController();
-  final TextEditingController _diasCreditoProveedorController =
-      TextEditingController();
 
   @override
   void initState() {
@@ -154,81 +143,22 @@ class _AddProveedorFormState extends State<AddProveedorForm> {
                     child: buildTextField(
                       'Nombre del Proveedor',
                       _nombreController,
-                      inputFormatters: [FormatoLetrasEspacios()],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Nombre del Proveedor';
-                        } else if (RegExp(r'[0-9]').hasMatch(value)) {
-                          return 'El nombre no debe contener números';
-                        }
-                        return null;
-                      },
+                      inputFormatters: [FormatoLetrasEspacios(), FormatoLongitudMaximaTexto()]
                     ),
                   ),
                   Center(
                     child: buildTextField(
-                      'Teléfono del Proveedor',
-                      _telefonoProveedorController,
-                      inputFormatters: [FormatoNumerosLongitudMaxima()],
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Teléfono del Proveedor';
-                        } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                          return 'El teléfono debe contener solo números';
-                        }
-                        return null;
-                      },
-                    ),
+                      'Contacto del Proveedor',
+                      inputFormatters: [AddressTextFormatter(), FormatoNumerosLongitudMaxima()],
+                      _contactoController,
+                      ),
                   ),
-                  Center(
+                   Center(
                     child: buildTextField(
-                      'Correo del Proveedor',
-                      inputFormatters: [CorreoTextFormatter()],
-                      _correoProveedorController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Correo del Proveedor';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: buildTextField(
-                      'RFC del Proveedor',
-                      _rfcProveedorController,
-                      inputFormatters: [RFCTextFormatter()],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa RFC del Proveedor';
-                        } else if (value.length != 13) {
-                          return 'El RFC debe tener 13 caracteres';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: buildTextField(
-                      'Domicilio del Proveedor',
-                      inputFormatters: [AddressTextFormatter()],
-                      _domicilioProveedorController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingresa Domicilio del Proveedor';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Center(
-                    child: buildTextField(
-                      'Días Crédito del Proveedor',
-                      inputFormatters: [DaysCreditTextFormatter()],
-                      _diasCreditoProveedorController,
-                      keyboardType: TextInputType.number,
-                    ),
+                      'Direccion del Proveedor',
+                      inputFormatters: [AddressTextFormatter(), FormatoLongitudMaximaTexto()],
+                      _direccionController,
+                      ),
                   ),
                   Center(
                     child: ElevatedButton(
