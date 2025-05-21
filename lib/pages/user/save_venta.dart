@@ -328,10 +328,9 @@ class _SaveVenta extends State<SaveVenta> {
                                     SizedBox(
                                       height: 50,
                                       width: 150,
-                                      child: buildTextField(
-                                        inputFormatters: [InteresPorMesFormatter()],
-                                          "Interes por Mes (%)",
-                                          _interesPorMes),
+                                      child: buildTextField(inputFormatters: [
+                                        InteresPorMesFormatter()
+                                      ], "Interes por Mes (%)", _interesPorMes),
                                     ),
                                     SizedBox(
                                       height: 50,
@@ -555,6 +554,9 @@ class _SaveVenta extends State<SaveVenta> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
+        if (elementos.isEmpty) {
+          return const Center(child: Text("No hay elementos disponibles"));
+        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [

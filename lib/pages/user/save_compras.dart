@@ -165,7 +165,10 @@ class _AddCompraFormState extends State<AddCompraForm> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Column(
+        if (elementos.isEmpty) {
+          return const Center(child: Text("No hay elementos disponibles"));
+        }
+                return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(

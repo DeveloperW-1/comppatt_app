@@ -49,6 +49,15 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  msix: ^3.16.9
+msix_config:
+  display_name: COMPPATT
+  publisher_display_name: Wilver Adrian Meraz Estrada
+  identity_name: com.suite.wilver.comppatt
+  msix_version: 1.0.0.0
+  certificate_path: windows/certificate.pfx
+  publisher: CN=ComppattTestCert
+  certificate_password: 12345 # Reemplaza "password123" con la contraseña real de tu certificado
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
